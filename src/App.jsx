@@ -33,7 +33,8 @@ function App() {
               flexDirection: 'row',
               justifyContent: 'space-around',
               gap: "1rem",
-              overflowX: "scroll"
+              overflowX: "scroll",
+              paddingRight: "2rem"
             }}
           >
             <Box
