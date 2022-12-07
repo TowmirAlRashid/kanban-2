@@ -1,12 +1,121 @@
 import { Box } from "@mui/material"
-import CategoryHead from "./components/CategoryHead";
-import CustomCard from "./components/Card";
-import data from './data.js';
-import NoEngagement from "./components/NoEngagement";
 
+import data from "./data";
+
+// import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { useEffect, useState } from "react";
+import CustomColumn from "./components/CustomColumn";
+
+const ZOHO = window.ZOHO;
 
 
 function App() {
+  const [initialized, setInitialized] = useState(false) //initializing widget
+
+  const [cardsData, setCardsData] = useState([]);
+
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    ZOHO.embeddedApp.on("PageLoad",function(data)
+    {
+      console.log(data)
+      setInitialized(true)
+    })
+
+    ZOHO.embeddedApp.init();
+  }, [])
+
+
+  useEffect(() => {
+    if(initialized){
+      ZOHO.CRM.API.getAllRecords({Entity:"ZP_Tasks",sort_order:"desc",per_page:200,page:1})
+      .then(function(data){
+        setCardsData(data.data?.filter(singleData => singleData.Assign_To !== null))
+        setProjects(
+          data.data?.filter(singleData => singleData.Project_Name !== null)
+        )
+      })
+    }
+  }, [initialized])
+
+
+  const handleAddTaskSubmit = async (data) => {     // add a new task
+    const {Project_Name, ...rest} = data;
+    var recordData = {
+      "Project_Name": Project_Name.Project_Name, ...rest
+    }
+
+    console.log(recordData)
+
+    ZOHO.CRM.API.insertRecord({Entity:"ZP_Tasks",APIData:recordData,Trigger:[""]}).then(function(data){
+      console.log(data);
+      if (data?.data?.[0]?.code === 'SUCCESS'){
+        setCardsData([
+          ...cardsData,
+          {
+            ...recordData
+          }
+        ])
+      }
+    });
+    // Send data to Standalone Function
+    // Billable_log_in_Minutes
+    const func_name = "bcrm_zp_widget_integration";
+    var req_data ={
+      "arguments": JSON.stringify(data)
+    };
+    const crmStandaloneResp = await ZOHO.CRM.FUNCTIONS.execute(func_name, req_data)
+    console.log("Response from Sandalone ", crmStandaloneResp)
+  }
+
+
+  const handleEditTask = async (data) => {  // edit and update the task
+    const {Project_Name, ...rest} = data;
+    var recordData = {
+      "Project_Name": Project_Name.Project_Name, ...rest
+    }
+
+    console.log(recordData)
+
+    var config={
+      Entity:"ZP_Tasks",
+      APIData:{
+        ...recordData
+      },
+      Trigger:[""]
+    }
+    ZOHO.CRM.API.updateRecord(config)
+    .then(function(data){
+      if (data?.data?.[0]?.code === 'SUCCESS'){
+        setCardsData(cardsData.map(card => {
+          if(card.id === recordData.id){
+            return {
+              ...recordData
+            }
+          }
+
+          return card;
+        }))
+      }
+    })
+  }
+
+
+  const handleTaskDelete = (data) => {              // delete the selected task
+    let { taskId, Name } = data;
+
+    ZOHO.CRM.API.deleteRecord({Entity:"ZP_Tasks",RecordID: taskId})
+    .then(function(data){
+        if(data?.data?.[0]?.code === "SUCCESS"){
+          setCardsData(cardsData?.filter(card => card.Name !== Name))
+        }
+    })
+  }
+
+
+  
+
   return (
     <div className="App">
       <Box                                            // parent div to hold the app
@@ -26,7 +135,7 @@ function App() {
         >
           <Box                                      // div that holds the category modules
             sx={{
-              width: '2885px',
+              width: `calc(${data.length * 345 + 100}px)`,
               height: '98vh',
               backgroundColor: "#edf0f4",
               display: 'flex',
@@ -37,240 +146,26 @@ function App() {
               paddingRight: "2rem"
             }}
           >
-            <Box
-              sx={{
-                width: '325px',
-                margin: '15px auto 30px',
-                overflowY: "auto",
-              }}
-            >
-              <CategoryHead
-                name="All Tasks"
-                numOfTasks={data?.length}
-                backgroundColor="#dff7e4"
-                borderTopColor="#93cb9d"
-                otherBorders="#c7e8ce"
-              />
-              
-              {
-                data?.filter(singleData => singleData?.category === "all_tasks")?.length > 0 ?
-                data?.filter((singleData) => singleData?.category === "all_tasks").map(singleData => (
-                  <CustomCard
-                    key={singleData?.id} 
-                    projectName={singleData?.projectName}
+            {
+              data?.map(column => {
+                return (
+                  <CustomColumn
+                    key={column.id}
+                    columnTitle={column.columnTitle}
+                    numberOfTasks={cardsData?.filter(card => card.Assigned_to === column.status).length}
+                    backgroundColor={column.backgroundColor}
+                    borderTopColor={column.borderTopColor}
+                    otherBorders={column.otherBorders}
+                    handleAddTaskSubmit={handleAddTaskSubmit}
+                    status={column.status}
+                    cardsData={cardsData}
+                    projects={projects}
+                    handleTaskDelete={handleTaskDelete}
+                    handleEditTask={handleEditTask}
                   />
-                )) :
-                <NoEngagement />
-              }
-            </Box>
-
-            <Box
-              sx={{
-                width: '325px',
-                margin: '15px auto 30px',
-                overflowY: "auto",
-              }}
-            >
-              <CategoryHead
-                name="Emran"
-                numOfTasks={data?.filter(singleData => singleData.category === "emran").length}
-                backgroundColor="#daecf7"
-                borderTopColor="#98bfd7"
-                otherBorders="#c9deec"
-              />
-              {
-                data?.filter(singleData => singleData?.category === "emran")?.length > 0 ?
-                data?.filter((singleData) => singleData?.category === "emran").map(singleData => (
-                  <CustomCard 
-                    key={singleData?.id} 
-                    projectName={singleData?.projectName}
-                  />
-                )) :
-                <NoEngagement />
-              }
-            </Box>
-
-            <Box
-              sx={{
-                width: '325px',
-                margin: '15px auto 30px',
-                overflowY: "auto",
-              }}
-            >
-              <CategoryHead
-                name="Baz"
-                numOfTasks={data?.filter(singleData => singleData.category === "baz").length}
-                backgroundColor="#f7edda"
-                borderTopColor="#d2bc93"
-                otherBorders="#e9deca"
-              />
-              {
-                data?.filter(singleData => singleData?.category === "baz")?.length > 0 ?
-                data?.filter((singleData) => singleData?.category === "baz").map(singleData => (
-                  <CustomCard 
-                    key={singleData?.id} 
-                    projectName={singleData?.projectName}
-                  />
-                )) :
-                <NoEngagement />
-              }
-            </Box>
-
-            <Box
-              sx={{
-                width: '325px',
-                margin: '15px auto 30px',
-                overflowY: "auto",
-              }}
-            >
-              <CategoryHead
-                name="Hoang"
-                numOfTasks={data?.filter(singleData => singleData.category === "hoang").length}
-                backgroundColor="#dae0f7"
-                borderTopColor="#9ba7d6"
-                otherBorders="#c5cce7"
-              />
-              {
-                data?.filter(singleData => singleData?.category === "hoang")?.length > 0 ?
-                data?.filter((singleData) => singleData?.category === "hoang").map(singleData => (
-                  <CustomCard 
-                    key={singleData?.id} 
-                    projectName={singleData?.projectName}
-                  />
-                )) :
-                <NoEngagement />
-              }
-            </Box>
-
-            <Box
-              sx={{
-                width: '325px',
-                margin: '15px auto 30px',
-                overflowY: "auto",
-              }}
-            >
-              <CategoryHead
-                name="Maddie"
-                numOfTasks={data?.filter(singleData => singleData.category === "maddie").length}
-                backgroundColor="#f7daef"
-                borderTopColor="#d095c0"
-                otherBorders="#eccce3"
-              />
-              {
-                data?.filter(singleData => singleData?.category === "maddie")?.length > 0 ?
-                data?.filter((singleData) => singleData?.category === "maddie").map(singleData => (
-                  <CustomCard 
-                    key={singleData?.id} 
-                    projectName={singleData?.projectName}
-                  />
-                )) :
-                <NoEngagement />
-              }
-            </Box>
-
-            <Box
-              sx={{
-                width: '325px',
-                margin: '15px auto 30px',
-                overflowY: "auto",
-              }}
-            >
-              <CategoryHead
-                name="Michael"
-                numOfTasks={data?.filter(singleData => singleData.category === "michael").length}
-                backgroundColor="#daf5f7"
-                borderTopColor="#99d1d3"
-                otherBorders="#cfe9ea"
-              />
-              {
-                data?.filter(singleData => singleData?.category === "michael")?.length > 0 ?
-                data?.filter((singleData) => singleData?.category === "michael").map(singleData => (
-                  <CustomCard 
-                    key={singleData?.id} 
-                    projectName={singleData?.projectName}
-                  />
-                )) :
-                <NoEngagement />
-              }
-            </Box>
-
-            <Box
-              sx={{
-                width: '325px',
-                margin: '15px auto 30px',
-                overflowY: "auto",
-              }}
-            >
-              <CategoryHead
-                name="Vignesh"
-                numOfTasks={data?.filter(singleData => singleData.category === "vignesh").length}
-                backgroundColor="#f7e2da"
-                borderTopColor="#d6ad9e"
-                otherBorders="#edd5cc"
-              />
-              {
-                data?.filter(singleData => singleData?.category === "vignesh")?.length > 0 ?
-                data?.filter((singleData) => singleData?.category === "vignesh").map(singleData => (
-                  <CustomCard 
-                    key={singleData?.id} 
-                    projectName={singleData?.projectName}
-                  />
-                )) :
-                <NoEngagement />
-              }
-            </Box>
-
-            <Box
-              sx={{
-                width: '325px',
-                margin: '15px auto 30px',
-                overflowY: "auto",
-              }}
-            >
-              <CategoryHead
-                name="Waiting For Client"
-                numOfTasks={data?.filter(singleData => singleData.category === "waiting").length}
-                backgroundColor="#f7dae4"
-                borderTopColor="#dca2b6"
-                otherBorders="#eecbd7"
-              />
-              {
-                data?.filter(singleData => singleData?.category === "waiting")?.length > 0 ?
-                data?.filter((singleData) => singleData?.category === "waiting").map(singleData => (
-                  <CustomCard 
-                    key={singleData?.id} 
-                    projectName={singleData?.projectName}
-                  />
-                )) :
-                <NoEngagement />
-              }
-            </Box>
-
-            <Box
-              sx={{
-                width: '325px',
-                margin: '15px auto 30px',
-                overflowY: "auto",
-              }}
-            >
-              <CategoryHead
-                name="Completed"
-                numOfTasks={data?.filter(singleData => singleData.category === "completed").length}
-                backgroundColor="#e7daf7"
-                borderTopColor="#ad93cd"
-                otherBorders="#d8c9eb"
-              />
-              {
-                data?.filter(singleData => singleData?.category === "completed")?.length > 0 ?
-                data?.filter((singleData) => singleData?.category === "completed").map(singleData => (
-                  <CustomCard 
-                    key={singleData?.id} 
-                    projectName={singleData?.projectName}
-                  />
-                )) :
-                <NoEngagement />
-              }
-            </Box>
+                )
+              })
+            }
           </Box>
         </Box>
       </Box>

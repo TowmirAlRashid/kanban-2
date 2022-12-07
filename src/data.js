@@ -1,368 +1,83 @@
 const data = [
     {
-        category: "all_tasks",
-        projectName: "Project Blue Ocean",
-        id: 1
-    },
-    {
-        category: "emran",
-        projectName: "Project 909",
-        id: 2
-    },
-    {
-        category: "all_tasks",
-        projectName: "Project Sparta",
-        id: 3
-    },
-    {
-        category: "hoang",
-        projectName: "Project Blue Ocean",
-        id: 4
-    },
-    {
-        category: "all_tasks",
-        projectName: "Project Mustung",
-        id: 5
-    },
-    {
-        category: "emran",
-        projectName: "Project Mustung", 
-        id: 6
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 7
-    },
-    {
-        category: "maddie",
-        projectName: "Project Mustung",
-        id: 8
-    },
-    {
-        category: "all_tasks",
-        projectName: "Project Mustung",
-        id: 9
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "emran",
-        projectName: "Project Mustung",
-        id: 11
-    },
-    {
-        category: "maddie",
-        projectName: "Project Mustung",
-        id: 12
-    },
-    {
-        category: "all_tasks",
-        projectName: "Project Mustung",
-        id: 13
-    },
-    {
-        category: "all_tasks",
-        projectName: "Project Mustung",
-        id: 14
-    },
-    {
-        category: "all_tasks",
-        projectName: "Project Mustung",
-        id: 15
-    },
-    {
-        category: "all_tasks",
-        projectName: "Project Mustung",
-        id: 16
-    },
-    {
-        category: "all_tasks",
-        projectName: "Project Mustung",
-        id: 17
-    },
-    {
-        category: "all_tasks",
-        projectName: "Project Sparta",
-        id: 3
-    },
-    {
-        category: "all_tasks",
-        projectName: "Project Sparta",
-        id: 3
-    },
-    {
-        category: "all_tasks",
-        projectName: "Project Sparta",
-        id: 3
-    },
-    {
-        category: "all_tasks",
-        projectName: "Project Sparta",
-        id: 3
-    },
-    {
-        category: "all_tasks",
-        projectName: "Project Sparta",
-        id: 3
-    },
-    {
-        category: "all_tasks",
-        projectName: "Project Sparta",
-        id: 3
-    },
-    {
-        category: "all_tasks",
-        projectName: "Project Sparta",
-        id: 3
-    },
-    {
-        category: "all_tasks",
-        projectName: "Project Sparta",
-        id: 3
-    },
-    {
-        category: "all_tasks",
-        projectName: "Project Sparta",
-        id: 3
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
-    },
-    {
-        category: "hoang",
-        projectName: "Project Mustung",
-        id: 10
+        id: 1,
+        columnTitle: "Tasks Not Assigned",
+        backgroundColor: "#dff7e4",
+        borderTopColor: "#93cb9d",
+        otherBorders: "#c7e8ce",
+        status: "Tasks Not Assigned"
+    },
+    {
+        id: 2,
+        columnTitle: "Mark",
+        backgroundColor: "#daecf7",
+        borderTopColor: "#98bfd7",
+        otherBorders: "#c9deec",
+        status: "Mark"
+    },
+    {
+        id: 3,
+        columnTitle: "Emranul",
+        backgroundColor: "#f7edda",
+        borderTopColor: "#d2bc93",
+        otherBorders: "#e9deca",
+        status: "Emranul"
+    },
+    {
+        id: 4,
+        columnTitle: "Baz",
+        backgroundColor: "#dae0f7",
+        borderTopColor: "#9ba7d6",
+        otherBorders: "#c5cce7",
+        status: "Baz"
+    },
+    {
+        id: 5,
+        columnTitle: "Hoang",
+        backgroundColor: "#f7daef",
+        borderTopColor: "#d095c0",
+        otherBorders: "#eccce3",
+        status: "Hoang"
+    },
+    {
+        id: 6,
+        columnTitle: "Maddie",
+        backgroundColor: "#daf5f7",
+        borderTopColor: "#99d1d3",
+        otherBorders: "#cfe9ea",
+        status: "Maddie"
+    },
+    {
+        id: 7,
+        columnTitle: "Michael",
+        backgroundColor: "#f7e2da",
+        borderTopColor: "#d6ad9e",
+        otherBorders: "#edd5cc",
+        status: "Michael"
+    },
+    {
+        id: 8,
+        columnTitle: "Binal",
+        backgroundColor: "#f7dae4",
+        borderTopColor: "#dca2b6",
+        otherBorders: "#eecbd7",
+        status: "Binal"
+    },
+    {
+        id: 9,
+        columnTitle: "Rowel",
+        backgroundColor: "#e7daf7",
+        borderTopColor: "#ad93cd",
+        otherBorders: "#d8c9eb",
+        status: "Rowel"
+    },
+    {
+        id: 10,
+        columnTitle: "Completed",
+        backgroundColor: "#f7edda",
+        borderTopColor: "#d2bc93",
+        otherBorders: "#e9deca",
+        status: "Completed"
     },
 ]
 
