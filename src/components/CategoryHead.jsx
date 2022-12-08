@@ -62,7 +62,7 @@ const CategoryHead = ({ name, numOfTasks, backgroundColor, borderTopColor, other
                     margin: "0 auto"
                 }}
             >
-                <Typography fontSize="0.8rem">{`${numOfTasks}`} Team Tasks</Typography>
+                <Typography fontSize="0.8rem">{`${numOfTasks}`} Team {`${numOfTasks > 1 ? "Tasks" : "Task"}`}</Typography>
             </Box>
         </Box>
 
