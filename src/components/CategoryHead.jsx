@@ -22,10 +22,11 @@ const CategoryHead = ({ name, numOfTasks, backgroundColor, borderTopColor, other
         <Box
             sx={{
                 width: '100%',
+                height: "100px",
                 borderRadius: '5px',
                 backgroundColor: `${backgroundColor}`,
                 padding: '8px 12px',
-                margin: '10px auto',
+                margin: '0 auto 10px',
                 borderTop: `4px solid ${borderTopColor}`,
                 borderLeft: `1px solid ${otherBorders}`, 
                 borderRight: `1px solid ${otherBorders}`, 

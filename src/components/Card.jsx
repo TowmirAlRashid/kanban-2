@@ -26,6 +26,19 @@ const CustomCard = ({ singleData, handleTaskDelete, name, handleEditTask, projec
     setHover(false)
   }
 
+  const countHr = (minutes) => {
+    if(minutes === null || minutes === undefined) {
+      return "0 Hr"
+    }
+    if(minutes === 0) {
+      return "0 Hr"
+    }
+    let timeString = "";
+    timeString += (`${Math.floor(minutes / 60)}:${minutes % 60 === 0 ? "00" : minutes % 60 < 10 ? `0${minutes % 60}` : minutes % 60} Hrs`)
+    
+    return timeString;
+  }
+
 
   //delete record
   const [open, setOpen] = useState(false);
@@ -176,7 +189,7 @@ const CustomCard = ({ singleData, handleTaskDelete, name, handleEditTask, projec
                 >
                   <AccessTimeIcon sx={{ fontSize: "14px" }} />
                   <Typography fontSize="14px">
-                    {`${Billable_log_in_Minutes === null || Billable_log_in_Minutes === undefined ? 0 : Billable_log_in_Minutes} M`}
+                    {countHr(Billable_log_in_Minutes)}
                   </Typography>
                 </Box>
               </Box>

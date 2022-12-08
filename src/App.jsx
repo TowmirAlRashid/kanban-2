@@ -112,16 +112,15 @@ function App() {
         }
     })
   }
-
-
   
 
   return (
     <div className="App">
       <Box                                            // parent div to hold the app
         sx={{
-          width: '100vw',
+          width: 'auto',
           height: '100vh',
+          overflowX: "auto",
           backgroundColor: "#edf0f4"
         }}
       >
@@ -129,8 +128,8 @@ function App() {
           sx={{
             width: '94%',
             height : '100%',
-            margin: '0 auto',
-            padding: "20px",
+            margin: '10px auto',
+            padding: "20px 20px 20px",
           }}
         >
           <Box                                      // div that holds the category modules
@@ -143,7 +142,7 @@ function App() {
               justifyContent: 'space-around',
               gap: "1rem",
               overflowX: "scroll",
-              paddingRight: "2rem"
+              paddingRight: "2rem",
             }}
           >
             {
@@ -152,7 +151,7 @@ function App() {
                   <CustomColumn
                     key={column.id}
                     columnTitle={column.columnTitle}
-                    numberOfTasks={cardsData?.filter(card => card.Assigned_to === column.status).length}
+                    numberOfTasks={cardsData?.filter(card => card.Assign_To.includes(column.status)).length}
                     backgroundColor={column.backgroundColor}
                     borderTopColor={column.borderTopColor}
                     otherBorders={column.otherBorders}

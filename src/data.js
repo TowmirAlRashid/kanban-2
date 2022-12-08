@@ -71,14 +71,6 @@ const data = [
         otherBorders: "#d8c9eb",
         status: "Rowel"
     },
-    {
-        id: 10,
-        columnTitle: "Completed",
-        backgroundColor: "#f7edda",
-        borderTopColor: "#d2bc93",
-        otherBorders: "#e9deca",
-        status: "Completed"
-    },
 ]
 
 export default data;

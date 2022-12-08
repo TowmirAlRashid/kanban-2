@@ -9,7 +9,7 @@ const CustomColumn = ({ columnTitle, numberOfTasks, backgroundColor, borderTopCo
     <Box
         sx={{
             width: '345px',
-            margin: '15px auto 30px',
+            margin: '0 auto 30px',
             overflowY: "auto",
         }}
     >
