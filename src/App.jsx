@@ -46,8 +46,6 @@ function App() {
       "Project_Name": Project_Name.Project_Name, ...rest
     }
 
-    console.log(recordData)
-
     ZOHO.CRM.API.insertRecord({Entity:"ZP_Tasks",APIData:recordData,Trigger:[""]}).then(function(data){
       console.log(data);
       if (data?.data?.[0]?.code === 'SUCCESS'){
@@ -59,24 +57,35 @@ function App() {
         ])
       }
     });
+
     // Send data to Standalone Function
     // Billable_log_in_Minutes
     const func_name = "bcrm_zp_widget_integration";
     var req_data ={
-      "arguments": JSON.stringify(data)
+      "arguments": JSON.stringify({
+        "Task_Name": data.Name,
+        "Description": data.Description,
+        "Assign_To": data.Assign_To,
+        "Project_Name": data.Project_Name,
+        "Account_Manager": data.Account_Manager,
+        "Due_Date": data.Due_Date,
+        "Task_Status": data.Task_Status,
+        "Billable": data.Billable
+      })
     };
     const crmStandaloneResp = await ZOHO.CRM.FUNCTIONS.execute(func_name, req_data)
-    console.log("Response from Sandalone ", crmStandaloneResp)
+    console.log("Response from Standalone ", crmStandaloneResp)
   }
 
 
-  const handleEditTask = async (data) => {  // edit and update the task
+  const handleEditTask = async (data) => {
+      console.log("testdata")
     const {Project_Name, ...rest} = data;
     var recordData = {
       "Project_Name": Project_Name.Project_Name, ...rest
     }
 
-    console.log(recordData)
+    console.log()
 
     var config={
       Entity:"ZP_Tasks",
@@ -94,11 +103,29 @@ function App() {
               ...recordData
             }
           }
-
           return card;
         }))
       }
     })
+
+    // Send data to Standalone Function
+    // Billable_log_in_Minutes
+    const func_name = "bcrm_zp_widget_integration";
+    var req_data ={
+      "arguments": JSON.stringify({
+        "Task_Name": data.Name,
+        "Task_ID": data.Task_ID,
+        "Description": data.Description,
+        "Assign_To": data.Assign_To,
+        "Project_Name": data.Project_Name,
+        "Account_Manager": data.Account_Manager,
+        "Due_Date": data.Due_Date,
+        "Task_Status": data.Task_Status,
+        "Billable": data.Billable
+      })
+    };
+    const crmStandaloneResp = await ZOHO.CRM.FUNCTIONS.execute(func_name, req_data)
+    console.log("Response from Standalone ", crmStandaloneResp)
   }
 
 

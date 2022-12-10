@@ -14,6 +14,7 @@ import DeleteTask from "./DeleteTask"
 import UpdateTask from "./UpdateTask"
 
 const CustomCard = ({ singleData, handleTaskDelete, name, handleEditTask, projects }) => {
+  // console.log(singleData)
   const { Project_Name, Account_Manager, Name, Task_Status, Billable_log_in_Minutes, Due_Date, Billable, id } = singleData;
 
   const [hover, setHover] = useState(false)

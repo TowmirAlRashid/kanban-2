@@ -1,4 +1,4 @@
-import * as React from 'react';
+ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
@@ -9,16 +9,14 @@ import { Controller, useForm } from 'react-hook-form';
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function AlertDialogSlide({ openTask, handleEditClose, handleEditTask, projects, singleData }) {
-  const { control, handleSubmit } = useForm();
-
-  const [selected, setSelected] = useState([...singleData.Assign_To])
+  const { control, handleSubmit,  formState: { errors } } = useForm(singleData);
 
   const getProjects = (arrayOfProjects) => {
     const arrayOfProjectNames = arrayOfProjects.filter(singleData => singleData.Project_ID !== null).map(singleData => {
@@ -50,30 +48,32 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
     return `${year}-${month + 1}-${day < 10 ? `0${day}` : day}`;
   }
 
-  const handleChange = (value) => {
-    setSelected(value)
-  }
 
- 
+// console.log({errors}, getValues(), singleData)
 
   const onsubmit = (data) => {
+
+    
     handleEditTask({
       "id": singleData.id,
+      "Task_ID": singleData.Task_ID,
       "Name": `${data.Name}`,
       "Description": `${data.Description}`,
-      "Assign_To": selected,
+      "Assign_To": data.Assign_To,
       "Project_Name": data.Project_Name,
       "Account_Manager": `${data.Account_Manager}`,
       "Due_Date": `${customDate(data.Due_Date)}`,
       "Task_Status": `${data.Task_Status}`,
       "Billable": `${data.Billable}`,
     })
+    handleEditClose()
   }
 
-  // console.log(singleData)
+
 
   return (
     <div>
+      {/* {JSON.stringify(singleData)} */}
       <Dialog
         open={openTask}
         TransitionComponent={Transition}
@@ -107,7 +107,8 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
               <Controller
                 name="Assign_To"
                 control={control}
-                
+                defaultValue={singleData?.Assign_To || []}
+                rules={{required: true}}
                 render={({ field }) => {
                   return (
                     <Autocomplete
@@ -117,10 +118,9 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                       size="small"
                       options={assignedToOptions}
                       getOptionLabel={(option) => option}
-                      defaultValue={selected}
-                      onChange={(e,v)=>handleChange(v)}
+                      onChange={(_, data) => field.onChange(data)}
                       renderInput={(params) => (
-                        <TextField {...params}  />
+                        <TextField {...params} error={errors["Assign_To"]}  />
                       )}
                     />
                   )
@@ -143,7 +143,8 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                 <Controller
                   name="Project_Name"
                   control={control}
-                  defaultValue={{Project_Name: singleData?.Project_Name}}
+                  defaultValue={{ Project_Name: singleData?.Project_Name, Project_ID: singleData?.Project_ID }}
+                  rules={{required: true}}
                   render={({ field }) => {
                     return (
                       <Autocomplete
@@ -170,6 +171,7 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                               }
                             }}
                             {...params}
+                            error={errors["Project_Name"]}
                           />
                         )}
                       />
@@ -223,6 +225,7 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
               control={control}
               name="Name"
               defaultValue={singleData.Name}
+              rules={{required: true}}
               render={({ field }) => (
                 <>
                   <FormLabel id='name' sx={{ mb: "10px",color: "black" }}>Task Name</FormLabel>
@@ -238,6 +241,7 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                     fullWidth
                     {...field}
                     sx={{ mb: "1rem" }}
+                    error={errors["Name"]}
                   />
                 </>
               )}
@@ -262,17 +266,26 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                 defaultValue={singleData.Due_Date}
                   name="Due_Date"
                   control={control}
+                  rules={{required: true}}
                   render={({ field }) => (
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker 
                         onChange={(newValue) => field.onChange(dayjs(newValue).format('YYYY/MM/DD'))}
                         {...field}
-                        renderInput={(params) => <TextField id="date" variant="outlined" type="date" sx={{
+                        renderInput={(params) => 
+                          <TextField 
+                            id="date" 
+                            variant="outlined" 
+                            type="date" 
+                            sx={{
                               "& .MuiInputBase-root": {
                                 height: "2.3rem !important",
                               },
-                              
-                            }} {...params} required />}
+                            }} 
+                            {...params} 
+                            error={errors["Due_Date"]}
+                          />
+                        }
                       />
                     </LocalizationProvider>
                   )}
@@ -286,6 +299,7 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                   name="Task_Status"
                   control={control}
                   defaultValue={singleData?.Task_Status}
+                  rules={{required: true}}
                   render={({ field }) => {
                     return (
                       <Autocomplete
@@ -311,6 +325,7 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                               }
                             }}
                             {...params}
+                            error={errors["Task_Status"]}
                           />
                         )}
                       />
@@ -326,6 +341,7 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                   name="Billable"
                   control={control}
                   defaultValue={singleData?.Billable}
+                  rules={{required: true}}
                   render={({ field }) => {
                     return (
                       <Autocomplete
@@ -351,6 +367,7 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                               }
                             }}
                             {...params}
+                            error={errors["Billable"]}
                           />
                         )}
                       />
@@ -389,7 +406,12 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
               }}
             >
               <Button onClick={handleEditClose} variant="outlined">Cancel</Button>
-              <Button variant='contained' type='submit' onClick={handleEditClose}>Update</Button>
+              <Button
+                variant='contained' 
+                type='submit' 
+                onClick={
+                  handleSubmit(onsubmit)
+                }>Update</Button>
             </Box>
           </Box>
         </DialogContent>

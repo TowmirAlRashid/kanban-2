@@ -32,7 +32,8 @@ const CategoryHead = ({ name, numOfTasks, backgroundColor, borderTopColor, other
                 borderRight: `1px solid ${otherBorders}`, 
                 borderBottom: `1px solid ${otherBorders}`,
                 position: "sticky",
-                top: "0"
+                top: "0",
+                zIndex: 10
             }}
             className="module_category_header"
         >
