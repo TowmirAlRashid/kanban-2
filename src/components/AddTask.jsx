@@ -19,9 +19,15 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function AlertDialogSlide({ open, handleClose, name, handleAddTaskSubmit, projects, loading, setLoading }) {
+  console.log({loading})
+  const [addCardLoading, setAddCardLoading] = useState(loading);
+  // useEffect(()=> {
+  //   setLoading(addCardLoading)
+  // }, [addCardLoading])
   const { control, handleSubmit, reset } = useForm();
 
   const [selected, setSelected] = useState([name])
+  
 
   const getProjects = (arrayOfProjects) => {
     const arrayOfProjectNames = arrayOfProjects.filter(singleData => singleData.Project_ID !== null).map(singleData => {
@@ -59,9 +65,9 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
 
  
 
-  const onsubmit = (data) => {
-    setLoading(true);
-    handleAddTaskSubmit({
+  const onsubmit = async (data) => {
+    setAddCardLoading(true);
+    await handleAddTaskSubmit({
       "Name": `${data.Name}`,
       "Description": `${data.Description}`,
       "Assign_To": selected,
@@ -82,9 +88,10 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
       "Description": ""
     })
 
-    if(!loading){
+  
+    setAddCardLoading(false);
       handleClose()
-    }
+    
   }
 
   return (
@@ -396,7 +403,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                 type='button' 
                 loadingPosition="start"
                 startIcon={<AddIcon />}
-                loading={loading}
+                loading={addCardLoading}
                 onClick={handleSubmit(onsubmit)}
               >
                 Add Task
@@ -408,14 +415,3 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
     </div>
   );
 }
-
-{/* <LoadingButton
-          size="small"
-          onClick={handleClick}
-          endIcon={<SendIcon />}
-          loading={loading}
-          loadingPosition="end"
-          variant="contained"
-        >
-          Send
-        </LoadingButton> */}

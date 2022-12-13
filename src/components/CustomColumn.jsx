@@ -79,7 +79,7 @@ const CustomColumn = ({
         }
 
         {
-            (cardsData?.filter(singleData => singleData?.Assign_To?.includes(status)).length === 0 || cardsData?.filter((singleData) => filterProjects.includes(singleData.Project_Name)).length === 0) && <NoEngagement />
+            // (cardsData?.filter(singleData => singleData?.Assign_To?.includes(status)).length === 0 || cardsData?.filter((singleData) => filterProjects.includes(singleData.Project_Name)).length === 0) && <NoEngagement />
         }
 
         {

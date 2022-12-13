@@ -39,7 +39,7 @@ function App() {
     status: "Tasks Not Assigned"
 }]);
 
-const [loading, setLoading] = useState(false)
+const [loading, setLoading] = useState(false) // loading button state
 
   useEffect(() => {
     ZOHO.embeddedApp.on("PageLoad", function (data) {
