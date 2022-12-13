@@ -9,13 +9,18 @@ import { Controller, useForm } from 'react-hook-form';
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import { useState, useEffect } from 'react';
+
+import LoadingButton from '@mui/lab/LoadingButton';
+import SaveIcon from '@mui/icons-material/Save';
+
+import { useState } from 'react';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function AlertDialogSlide({ openTask, handleEditClose, handleEditTask, projects, singleData }) {
+export default function AlertDialogSlide({ openTask, handleEditClose, handleEditTask, projects, singleData, loading }) {
+  const [updateLoader, setUpdateLoader] = useState(loading)
   const { control, handleSubmit,  formState: { errors } } = useForm(singleData);
 
   const getProjects = (arrayOfProjects) => {
@@ -51,10 +56,10 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
 
 // console.log({errors}, getValues(), singleData)
 
-  const onsubmit = (data) => {
-
+  const onsubmit = async (data) => {
+    setUpdateLoader(true)
     
-    handleEditTask({
+    await handleEditTask({
       "id": singleData.id,
       "Task_ID": singleData.Task_ID,
       "Name": `${data.Name}`,
@@ -66,6 +71,8 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
       "Task_Status": `${data.Task_Status}`,
       "Billable": `${data.Billable}`,
     })
+
+    setUpdateLoader(false)
     handleEditClose()
   }
 
@@ -406,12 +413,18 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
               }}
             >
               <Button onClick={handleEditClose} variant="outlined">Cancel</Button>
-              <Button
+              <LoadingButton
                 variant='contained' 
-                type='submit' 
+                type='button'
+                loadingPosition="start"
+                startIcon={<SaveIcon />}
+                loading={updateLoader} 
                 onClick={
                   handleSubmit(onsubmit)
-                }>Update</Button>
+                }
+              >
+                Update
+              </LoadingButton>
             </Box>
           </Box>
         </DialogContent>

@@ -18,7 +18,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function AlertDialogSlide({ open, handleClose, name, handleAddTaskSubmit, projects, loading, setLoading }) {
+export default function AlertDialogSlide({ open, handleClose, name, handleAddTaskSubmit, projects, loading }) {
   console.log({loading})
   const [addCardLoading, setAddCardLoading] = useState(loading);
   // useEffect(()=> {

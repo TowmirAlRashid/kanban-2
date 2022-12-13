@@ -13,7 +13,7 @@ import { useState } from 'react';
 import DeleteTask from "./DeleteTask"
 import UpdateTask from "./UpdateTask"
 
-const CustomCard = ({ singleData, handleTaskDelete, name, handleEditTask, projects }) => {
+const CustomCard = ({ singleData, handleTaskDelete, name, handleEditTask, projects, loading, setLoading, ZOHO, cardsData, setCardsData }) => {
   // console.log(singleData)
   const { Project_Name, Account_Manager, Name, Task_Status, Billable_log_in_Minutes, Due_Date, Billable, id, Project_ID, Task_ID } = singleData;
 
@@ -348,6 +348,9 @@ const CustomCard = ({ singleData, handleTaskDelete, name, handleEditTask, projec
         projectId={Project_ID}
         taskId={Task_ID}
         projectName={Project_Name}
+        ZOHO={ZOHO}
+        cardsData={cardsData}
+        setCardsData={setCardsData}
       />
 
       <UpdateTask 
@@ -356,6 +359,8 @@ const CustomCard = ({ singleData, handleTaskDelete, name, handleEditTask, projec
         handleEditTask={handleEditTask}
         projects={projects}
         singleData={singleData}
+        loading={loading} 
+        setLoading={setLoading}
       />
     </>
   );

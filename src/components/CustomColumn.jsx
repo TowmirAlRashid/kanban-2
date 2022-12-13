@@ -2,7 +2,7 @@ import { Box } from '@mui/material'
 import React from 'react'
 import CustomCard from './Card'
 import CategoryHead from './CategoryHead'
-import NoEngagement from './NoEngagement'
+// import NoEngagement from './NoEngagement'
 
 const CustomColumn = ({ 
     columnTitle, 
@@ -18,7 +18,9 @@ const CustomColumn = ({
     handleEditTask,
     filterProjects,
     loading, 
-    setLoading
+    setLoading,
+    ZOHO,
+    setCardsData
 }) => {
 
     // console.log({filterProjects})
@@ -74,6 +76,11 @@ const CustomColumn = ({
                         name={columnTitle}
                         handleEditTask={handleEditTask}
                         projects={projects}
+                        loading={loading} 
+                        setLoading={setLoading}
+                        ZOHO={ZOHO}
+                        cardsData={cardsData}
+                        setCardsData={setCardsData}
                     />
                 ))
         }
