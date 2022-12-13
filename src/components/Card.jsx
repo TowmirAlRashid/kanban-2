@@ -13,7 +13,7 @@ import { useState } from 'react';
 import DeleteTask from "./DeleteTask"
 import UpdateTask from "./UpdateTask"
 
-const CustomCard = ({ singleData, handleTaskDelete, name, handleEditTask, projects, loading, setLoading, ZOHO, cardsData, setCardsData }) => {
+const CustomCard = ({ singleData, handleTaskDelete, name, handleEditTask, projects, loading, setLoading }) => {
   // console.log(singleData)
   const { Project_Name, Account_Manager, Name, Task_Status, Billable_log_in_Minutes, Due_Date, Billable, id, Project_ID, Task_ID } = singleData;
 

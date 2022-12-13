@@ -19,7 +19,6 @@ const CustomColumn = ({
     filterProjects,
     loading, 
     setLoading,
-    ZOHO,
     setCardsData
 }) => {
 
@@ -63,6 +62,7 @@ const CustomColumn = ({
                 cardsData?.filter((singleData) => singleData?.Assign_To?.includes(status))
                 .filter(singleData => {
                     if(filterProjects.length > 0){
+                        
                         return filterProjects?.includes(singleData?.Project_Name)
                     } else {
                         return singleData;
@@ -78,7 +78,6 @@ const CustomColumn = ({
                         projects={projects}
                         loading={loading} 
                         setLoading={setLoading}
-                        ZOHO={ZOHO}
                         cardsData={cardsData}
                         setCardsData={setCardsData}
                     />

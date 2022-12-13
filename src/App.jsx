@@ -30,14 +30,7 @@ function App() {
 
   const [expand, setExpand] = useState(false);
   const [filterProjects, setFilterProjects] = useState([]);
-  const [filterPersons, setFilterPersons] = useState([{
-    id: 1,
-    columnTitle: "Tasks Not Assigned",
-    backgroundColor: "#dff7e4",
-    borderTopColor: "#93cb9d",
-    otherBorders: "#c7e8ce",
-    status: "Tasks Not Assigned"
-}]);
+  const [filterPersons, setFilterPersons] = useState([]);
 
 const [loading, setLoading] = useState(false) // loading button state
 
@@ -215,11 +208,9 @@ const [loading, setLoading] = useState(false) // loading button state
       .filter((singleData) => singleData.Project_ID !== null)
       .map((singleData) => singleData.Project_Name);
     const uniqueArrayOfProjectNames = Array.from(new Set(arrayOfProjectNames));
-    console.log(uniqueArrayOfProjectNames);
+    // console.log(uniqueArrayOfProjectNames);
     return uniqueArrayOfProjectNames;
   };
-
-  console.log(filterProjects)
 
   return (
     <div>
@@ -293,13 +284,15 @@ const [loading, setLoading] = useState(false) // loading button state
             <Autocomplete
               multiple
               id="filterByPerson"
-              options={data.filter(
-                (elem) => elem.status !== "Tasks Not Assigned"
-              )}
+              options={
+                data.filter(
+                  (elem) => elem.status !== "Tasks Not Assigned")
+                  .map(elem => elem.status)
+              }
               disableCloseOnSelect
               limitTags={1}
               size="small"
-              getOptionLabel={(option) => option.status}
+              getOptionLabel={(option) => option}
               renderOption={(props, option, { selected }) => (
                 <li {...props}>
                   <Checkbox
@@ -308,7 +301,7 @@ const [loading, setLoading] = useState(false) // loading button state
                     style={{ marginRight: 8 }}
                     checked={selected}
                   />
-                  {option.status}
+                  {option}
                 </li>
               )}
               style={{ width: 300 }}
@@ -317,10 +310,10 @@ const [loading, setLoading] = useState(false) // loading button state
               )}
               onChange={(e, v) => {
                 setFilterProjects((prev) => {
-                  return [
+                  return Array.from(new Set([
                     ...prev,
                     ...v
-                  ]
+                  ]))
                 })
               }}
             />
@@ -366,7 +359,39 @@ const [loading, setLoading] = useState(false) // loading button state
               paddingRight: "2rem",
             }}
           >
-            {data?.map((column) => {
+            <CustomColumn 
+              columnTitle={data[0].columnTitle}
+              backgroundColor={data[0].backgroundColor}
+              borderTopColor={data[0].borderTopColor}
+              otherBorders={data[0].otherBorders}
+              numberOfTasks={
+                cardsData?.filter((card) =>
+                  card.Assign_To.includes(data[0].status)
+                ).length
+              }
+              handleAddTaskSubmit={handleAddTaskSubmit}
+              status={data[0].status}
+              cardsData={cardsData}
+              setCardsData={setCardsData}
+              projects={projects}
+              handleTaskDelete={handleTaskDelete}
+              handleEditTask={handleEditTask}
+              filterProjects={filterProjects}
+              loading={loading} 
+              setLoading={setLoading}
+            />
+
+            {
+              data?.filter((elem) => elem.status !== "Tasks Not Assigned") 
+            ?.filter(column => {
+              if(filterPersons.length > 0){
+                console.log(filterPersons.length)
+                return filterPersons?.includes(column.columnTitle)
+              } else {
+                return column;
+              }
+            })
+            ?.map((column) => {
               return (
                 <CustomColumn
                   key={column.id}
@@ -389,7 +414,6 @@ const [loading, setLoading] = useState(false) // loading button state
                   filterProjects={filterProjects}
                   loading={loading} 
                   setLoading={setLoading}
-                  ZOHO={ZOHO}
                 />
               );
             })}
