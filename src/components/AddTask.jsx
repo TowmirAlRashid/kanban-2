@@ -11,12 +11,15 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 
+import LoadingButton from '@mui/lab/LoadingButton';
+import AddIcon from '@mui/icons-material/Add';
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function AlertDialogSlide({ open, handleClose, name, handleAddTaskSubmit, projects }) {
-  const { control, handleSubmit } = useForm();
+export default function AlertDialogSlide({ open, handleClose, name, handleAddTaskSubmit, projects, loading, setLoading }) {
+  const { control, handleSubmit, reset } = useForm();
 
   const [selected, setSelected] = useState([name])
 
@@ -57,6 +60,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
  
 
   const onsubmit = (data) => {
+    setLoading(true);
     handleAddTaskSubmit({
       "Name": `${data.Name}`,
       "Description": `${data.Description}`,
@@ -67,6 +71,20 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
       "Task_Status": `${data.Task_Status}`,
       "Billable": `${data.Billable}`,
     })
+
+    reset({
+      "Assign_To": [name],
+      "Project_Name": {},
+      "Account_Manager": "",
+      "Name": "",
+      "Task_Status": "",
+      "Billable": "",
+      "Description": ""
+    })
+
+    if(!loading){
+      handleClose()
+    }
   }
 
   return (
@@ -373,7 +391,16 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
               }}
             >
               <Button onClick={handleClose} variant="outlined">Cancel</Button>
-              <Button variant='contained' type='submit' onClick={handleClose}>Add Task</Button>
+              <LoadingButton 
+                variant='contained' 
+                type='button' 
+                loadingPosition="start"
+                startIcon={<AddIcon />}
+                loading={loading}
+                onClick={handleSubmit(onsubmit)}
+              >
+                Add Task
+              </LoadingButton>
             </Box>
           </Box>
         </DialogContent>
@@ -381,3 +408,14 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
     </div>
   );
 }
+
+{/* <LoadingButton
+          size="small"
+          onClick={handleClick}
+          endIcon={<SendIcon />}
+          loading={loading}
+          loadingPosition="end"
+          variant="contained"
+        >
+          Send
+        </LoadingButton> */}

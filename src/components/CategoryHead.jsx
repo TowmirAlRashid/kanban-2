@@ -6,7 +6,7 @@ import AddCard from "./AddTask"
 
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
-const CategoryHead = ({ name, numOfTasks, backgroundColor, borderTopColor, otherBorders, handleAddTaskSubmit, projects }) => {
+const CategoryHead = ({ name, numOfTasks, backgroundColor, borderTopColor, otherBorders, handleAddTaskSubmit, projects, loading, setLoading }) => {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -73,6 +73,8 @@ const CategoryHead = ({ name, numOfTasks, backgroundColor, borderTopColor, other
             name={name}
             handleAddTaskSubmit={handleAddTaskSubmit}
             projects={projects}
+            loading={loading} 
+            setLoading={setLoading}
         />
     </>
   )

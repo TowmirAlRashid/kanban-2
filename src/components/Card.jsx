@@ -15,7 +15,7 @@ import UpdateTask from "./UpdateTask"
 
 const CustomCard = ({ singleData, handleTaskDelete, name, handleEditTask, projects }) => {
   // console.log(singleData)
-  const { Project_Name, Account_Manager, Name, Task_Status, Billable_log_in_Minutes, Due_Date, Billable, id } = singleData;
+  const { Project_Name, Account_Manager, Name, Task_Status, Billable_log_in_Minutes, Due_Date, Billable, id, Project_ID, Task_ID } = singleData;
 
   const [hover, setHover] = useState(false)
 
@@ -343,8 +343,11 @@ const CustomCard = ({ singleData, handleTaskDelete, name, handleEditTask, projec
         open={open}
         setOpen={setOpen}
         handleTaskDelete={handleTaskDelete}
-        taskId={id}
+        recordId={id}
         Name={Name}
+        projectId={Project_ID}
+        taskId={Task_ID}
+        projectName={Project_Name}
       />
 
       <UpdateTask 
