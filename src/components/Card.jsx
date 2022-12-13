@@ -348,9 +348,8 @@ const CustomCard = ({ singleData, handleTaskDelete, name, handleEditTask, projec
         projectId={Project_ID}
         taskId={Task_ID}
         projectName={Project_Name}
-        ZOHO={ZOHO}
-        cardsData={cardsData}
-        setCardsData={setCardsData}
+        loading={loading} 
+        setLoading={setLoading}
       />
 
       <UpdateTask 

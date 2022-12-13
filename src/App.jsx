@@ -177,38 +177,38 @@ const [loading, setLoading] = useState(false) // loading button state
     }
   };
 
-  // const handleTaskDelete = async (deleteData) => {
-  //   // delete the selected task
-  //   let { Name, projectId, taskId } = deleteData;
+  const handleTaskDelete = async (deleteData) => {
+    // delete the selected task
+    let { Name, projectId, taskId } = deleteData;
 
-  //   const func_name = "bcrm_zp_widget_delete_task";
-  //   var req_data = {
-  //     arguments: JSON.stringify({
-  //       Task_Id: taskId,
-  //       Project_ID: projectId,
-  //     }),
-  //   };
-  //   try {
-  //     const crmStandaloneDeleteResp = await ZOHO.CRM.FUNCTIONS.execute(
-  //       func_name,
-  //       req_data
-  //     );
-  //     const {
-  //       return_map: { data },
-  //     } = crmStandaloneDeleteResp;
-  //     if (data?.error) {
-  //       return "";
-  //     }
-  //     if(data.response === "Task Deleted Successfully"){
-  //       setCardsData(cardsData?.filter((card) => card.Name !== Name));
-  //       setLoading(false)
-  //     }
-  //     // Task Deleted Successfully
-  //     console.log("crmStandaloneDeleteResp", crmStandaloneDeleteResp);
-  //   } catch (error) {
-  //     console.log({crmStandaloneDeleteResp: error});
-  //   }
-  // };
+    const func_name = "bcrm_zp_widget_delete_task";
+    var req_data = {
+      arguments: JSON.stringify({
+        Task_Id: taskId,
+        Project_ID: projectId,
+      }),
+    };
+    try {
+      const crmStandaloneDeleteResp = await ZOHO.CRM.FUNCTIONS.execute(
+        func_name,
+        req_data
+      );
+      const {
+        return_map: { data },
+      } = crmStandaloneDeleteResp;
+      if (data?.error) {
+        return "";
+      }
+      if(data.response === "Task Deleted Successfully"){
+        setCardsData(cardsData?.filter((card) => card.Name !== Name));
+        setLoading(false)
+      }
+      // Task Deleted Successfully
+      console.log("crmStandaloneDeleteResp", crmStandaloneDeleteResp);
+    } catch (error) {
+      console.log({crmStandaloneDeleteResp: error});
+    }
+  };
 
   const getProjectNames = (arrayOfProjects) => {
     const arrayOfProjectNames = arrayOfProjects
@@ -384,7 +384,7 @@ const [loading, setLoading] = useState(false) // loading button state
                   cardsData={cardsData}
                   setCardsData={setCardsData}
                   projects={projects}
-                  // handleTaskDelete={handleTaskDelete}
+                  handleTaskDelete={handleTaskDelete}
                   handleEditTask={handleEditTask}
                   filterProjects={filterProjects}
                   loading={loading} 

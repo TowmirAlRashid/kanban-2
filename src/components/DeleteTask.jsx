@@ -15,48 +15,22 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
   });
 
-export default function AlertDialogSlide({ open, setOpen, Name, projectId, taskId, projectName, ZOHO, cardsData, setCardsData }) {
-  const [loading, setLoading] = useState(false);
-
+export default function AlertDialogSlide({ open, setOpen, Name, projectId, taskId, projectName, handleTaskDelete, loading }) {
+  const [deleteLoader, setDeleteLoader] = useState(loading)
   const handleClose = () => {
     setOpen(false);
   };
 
-  const handleTaskDelete = async (deleteData) => {
-    // delete the selected task
-    setLoading(true)
-    let { Name, projectId, taskId } = deleteData;
+  const handleTaskDeleteClick = async () => {
+    setDeleteLoader(true)
 
-    const func_name = "bcrm_zp_widget_delete_task";
-    var req_data = {
-      arguments: JSON.stringify({
-        Task_Id: taskId,
-        Project_ID: projectId,
-      }),
-    };
-    try {
-      const crmStandaloneDeleteResp = await ZOHO.CRM.FUNCTIONS.execute(
-        func_name,
-        req_data
-      );
-      const {
-        return_map: { data },
-      } = crmStandaloneDeleteResp;
-      if (data?.error) {
-        return "";
-      }
-      if(data.response === "Task Deleted Successfully"){
-        setCardsData(cardsData?.filter((card) => card.Name !== Name));
-        setLoading(false)
-      }
-      // Task Deleted Successfully
-      console.log("crmStandaloneDeleteResp", crmStandaloneDeleteResp);
-    } catch (error) {
-      console.log({crmStandaloneDeleteResp: error});
-      setLoading(false)
-    }
+    await handleTaskDelete({Name, projectId, taskId})
+
+    setDeleteLoader(false)
+
     handleClose()
-  };
+  }
+
 
   return (
     <div>
@@ -87,9 +61,9 @@ export default function AlertDialogSlide({ open, setOpen, Name, projectId, taskI
             sx={{ ml: "1rem", backgroundColor: "red" }}
             loadingPosition="start"
             startIcon={<DeleteIcon />}
-            loading={loading} 
+            loading={deleteLoader} 
             onClick={()=>{
-                handleTaskDelete({Name, projectId, taskId})
+              handleTaskDeleteClick()
             }}>Delete</LoadingButton>
         </DialogActions>
       </Dialog>
