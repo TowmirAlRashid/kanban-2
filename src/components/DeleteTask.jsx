@@ -58,7 +58,9 @@ export default function AlertDialogSlide({ open, setOpen, Name, projectId, taskI
           <Button variant='outlined' onClick={handleClose}>Cancel</Button>
           <LoadingButton 
             variant='contained' 
-            sx={{ ml: "1rem", backgroundColor: "red" }}
+            sx={{ ml: "1rem", backgroundColor: "red", "&:hover": {
+              backgroundColor: "red"
+            } }}
             loadingPosition="start"
             startIcon={<DeleteIcon />}
             loading={deleteLoader} 

@@ -9,7 +9,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import LoadingButton from '@mui/lab/LoadingButton';
 import AddIcon from '@mui/icons-material/Add';
@@ -63,6 +63,18 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
     setSelected(value)
   }
 
+  useEffect(() => {
+    reset({
+      "Assign_To": [name],
+      "Project_Name": null,
+      "Account_Manager": "",
+      "Name": "",
+      "Task_Status": "",
+      "Billable": "",
+      "Description": ""
+    })
+  }, []);
+
  
 
   const onsubmit = async (data) => {
@@ -80,18 +92,16 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
 
     reset({
       "Assign_To": [name],
-      "Project_Name": {},
+      "Project_Name": null,
       "Account_Manager": "",
       "Name": "",
       "Task_Status": "",
       "Billable": "",
       "Description": ""
     })
-
   
     setAddCardLoading(false);
       handleClose()
-    
   }
 
   return (
@@ -172,7 +182,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                         getOptionLabel={(option) => option.Project_Name}
                         onChange={(_, data) => {
                           field.onChange({ Project_Name: data?.Project_Name, Project_ID: data?.Project_ID })
-                          console.log(data)
+                          // console.log(data)
                         }}
                         sx={{
                           "& .MuiInputBase-root": {

@@ -97,11 +97,21 @@ const [loading, setLoading] = useState(false) // loading button state
         return "";
       }
       const { tasks } = data;
+
+      const getUrlInArray = tasks[0]?.link?.web?.url.split("/");  // gets the url in splitted array from the standalone response
+      const projectId = getUrlInArray?.[5]
+      const taskListId = getUrlInArray?.[6]
+      const taskId = getUrlInArray?.[7]
+      console.log("getUrlInArray", getUrlInArray);
+
       if (tasks[0].name === recordData.Name) {
         setCardsData([
           ...cardsData,
           {
             ...recordData,
+            Project_ID: projectId,
+            Task_List_ID: taskListId,
+            Task_ID: taskId
           },
         ]);
 
@@ -149,6 +159,12 @@ const [loading, setLoading] = useState(false) // loading button state
         return "";
       }
       const { tasks } = data;
+
+      const getUrlInArray = tasks[0]?.link?.web?.url.split("/");  // gets the url in splitted array from the standalone response
+      const projectId = getUrlInArray?.[5]
+      const taskListId = getUrlInArray?.[6]
+      console.log("getUrlInArray", getUrlInArray);
+
       console.log(tasks[0].name, recordData.Name);
       if (tasks[0].name === recordData.Name) {
         setCardsData(
@@ -156,6 +172,8 @@ const [loading, setLoading] = useState(false) // loading button state
             if (card.id === recordData.id) {
               return {
                 ...recordData,
+                Project_ID: projectId,
+                Task_List_ID: taskListId,
               };
             }
             return card;
@@ -170,8 +188,7 @@ const [loading, setLoading] = useState(false) // loading button state
     }
   };
 
-  const handleTaskDelete = async (deleteData) => {
-    // delete the selected task
+  const handleTaskDelete = async (deleteData) => {    // delete the targeted task
     let { Name, projectId, taskId } = deleteData;
 
     const func_name = "bcrm_zp_widget_delete_task";
