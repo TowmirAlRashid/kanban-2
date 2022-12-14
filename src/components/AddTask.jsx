@@ -21,10 +21,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function AlertDialogSlide({ open, handleClose, name, handleAddTaskSubmit, projects, loading }) {
   // console.log({loading})
   const [addCardLoading, setAddCardLoading] = useState(loading);
-  // useEffect(()=> {
-  //   setLoading(addCardLoading)
-  // }, [addCardLoading])
-  const { control, handleSubmit, reset } = useForm();
+  const { control, handleSubmit, reset, formState: { errors } } = useForm();
 
   const [selected, setSelected] = useState([name])
   
@@ -78,6 +75,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
  
 
   const onsubmit = async (data) => {
+    console.log("hi")
     setAddCardLoading(true);
     await handleAddTaskSubmit({
       "Name": `${data.Name}`,
@@ -139,6 +137,8 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
               <Controller
                 name="Assign_To"
                 control={control}
+                rules={{required: true}}
+                defaultValue={[name] || []}
                 render={({ field }) => {
                   return (
                     <Autocomplete
@@ -148,10 +148,9 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                       size="small"
                       options={assignedToOptions}
                       getOptionLabel={(option) => option}
-                      defaultValue={selected}
-                      onChange={(e,v)=>handleChange(v)}
+                      onChange={(_, data) => field.onChange(data)}
                       renderInput={(params) => (
-                        <TextField {...params}  />
+                        <TextField {...params} error={errors["Assign_To"]} />
                       )}
                     />
                   )
@@ -173,13 +172,14 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                 <Controller
                   name="Project_Name"
                   control={control}
+                  rules={{required: true}}
                   render={({ field }) => {
                     return (
                       <Autocomplete
                         {...field}
                         disablePortal
                         options={getProjects(projects)}
-                        getOptionLabel={(option) => option.Project_Name}
+                        getOptionLabel={(option) => option.Project_Name ? option.Project_Name : ""}
                         onChange={(_, data) => {
                           field.onChange({ Project_Name: data?.Project_Name, Project_ID: data?.Project_ID })
                           // console.log(data)
@@ -199,6 +199,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                               }
                             }}
                             {...params}
+                            error={errors["Project_Name"]}
                           />
                         )}
                       />
@@ -249,6 +250,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
             <Controller
               control={control}
               name="Name"
+              rules={{required: true}}
               render={({ field }) => (
                 <>
                   <FormLabel id='name' sx={{ mb: "10px",color: "black" }}>Task Name</FormLabel>
@@ -264,6 +266,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                     fullWidth
                     {...field}
                     sx={{ mb: "1rem" }}
+                    error={errors["Name"]}
                   />
                 </>
               )}
@@ -286,6 +289,8 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                 <Controller 
                   name="Due_Date"
                   control={control}
+                  defaultValue={customDate(new Date())}
+                  rules={{required: true}}
                   render={({ field }) => (
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DatePicker 
@@ -296,7 +301,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                                 height: "2.3rem !important",
                               },
                               
-                            }} {...params} required />}
+                            }} {...params} error={errors["Due_Date"]} />}
                       />
                     </LocalizationProvider>
                   )}
@@ -308,6 +313,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                 <Controller
                   name="Task_Status"
                   control={control}
+                  rules={{required: true}}
                   render={({ field }) => {
                     return (
                       <Autocomplete
@@ -333,6 +339,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                               }
                             }}
                             {...params}
+                            error={errors["Task_Status"]}
                           />
                         )}
                       />
@@ -346,6 +353,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                 <Controller
                   name="Billable"
                   control={control}
+                  rules={{required: true}}
                   render={({ field }) => {
                     return (
                       <Autocomplete
@@ -371,6 +379,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                               }
                             }}
                             {...params}
+                            error={errors["Billable"]}
                           />
                         )}
                       />

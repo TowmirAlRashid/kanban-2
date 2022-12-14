@@ -21,7 +21,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function AlertDialogSlide({ openTask, handleEditClose, handleEditTask, projects, singleData, loading }) {
   const [updateLoader, setUpdateLoader] = useState(loading)
-  const { control, handleSubmit, getValues,  formState: { errors } } = useForm(singleData);
+  const { control, handleSubmit,  formState: { errors } } = useForm(singleData);
 
   const getProjects = (arrayOfProjects) => {
     const arrayOfProjectNames = arrayOfProjects.filter(singleData => singleData.Project_ID !== null).map(singleData => {
@@ -77,7 +77,7 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
   }
 
 
- console.log({"allValues": getValues(), singleData})
+//  console.log({"allValues": getValues(), singleData})
   return (
     <div>
       {/* {JSON.stringify(singleData)} */}
@@ -162,7 +162,7 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                         getOptionLabel={(option) => option.Project_Name ? option.Project_Name : ""}
                         onChange={(_, data) => {
                           field.onChange({ Project_Name: data?.Project_Name, Project_ID: data?.Project_ID })
-                          console.log(data)
+                          // console.log(data)
                         }}
                         sx={{
                           "& .MuiInputBase-root": {
@@ -271,7 +271,7 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
               }}>
                 <FormLabel id="date" sx={{ mb: "10px", color: "black" }}>Due Date</FormLabel>
                 <Controller 
-                defaultValue={singleData.Due_Date}
+                  defaultValue={singleData.Due_Date}
                   name="Due_Date"
                   control={control}
                   rules={{required: true}}
