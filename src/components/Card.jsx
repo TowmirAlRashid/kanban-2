@@ -15,7 +15,7 @@ import UpdateTask from "./UpdateTask"
 
 const CustomCard = ({ singleData, handleTaskDelete, name, handleEditTask, projects, loading, setLoading }) => {
   // console.log(singleData)
-  const { Project_Name, Account_Manager, Name, Task_Status, Billable_log_in_Minutes, Due_Date, Billable, id, Project_ID, Task_ID } = singleData;
+  const { Project_Name, Account_Manager, Name, Task_Status, Billable_log_in_Minutes, Due_Date, Billable, id, Project_ID, Task_ID, Task_List_ID } = singleData;
 
   const [hover, setHover] = useState(false)
 
@@ -60,13 +60,16 @@ const CustomCard = ({ singleData, handleTaskDelete, name, handleEditTask, projec
     setOpenTask(false);
   };
 
+  const customLink = (projectId, taskListId, taskId) => {
+    return `https://projects.zoho.com/portal/boostedcrm#taskdetail/${projectId}/${taskListId}/${taskId}`
+  }
+
   return (
     <>
       <Card 
         sx={{ 
           width: '100%', 
-          margin: '10px auto',  
-          cursor: "pointer" ,
+          margin: '10px auto', 
           borderLeft: `${
             Task_Status === "Open - To Do" ? "4px solid #98d681" 
             : Task_Status === "Analysis" ? "4px solid #f6c1ff" 
@@ -133,7 +136,19 @@ const CustomCard = ({ singleData, handleTaskDelete, name, handleEditTask, projec
                 lineHeight: "20px"
               }}
             >
-              {Name}
+              <a 
+                href={customLink(Project_ID, Task_List_ID, Task_ID)} 
+                style={{ 
+                  textDecoration: "none",
+                  color: "#1976d2",
+                  "& a:visited": "#1976d2" ,
+                  "& a:hover": "#1b4a77"
+                }} 
+                target="_blank" 
+                rel="noreferrer"
+              >
+                {Name}
+              </a>
             </Typography>
           </Box>
 
