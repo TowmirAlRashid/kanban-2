@@ -251,7 +251,7 @@ const CustomCard = ({ singleData, handleTaskDelete, name, handleEditTask, projec
                 }}
               >
                 <Chip 
-                  label={Task_Status === "In Progress - Waiting for Developer" ? "In Progress" : Task_Status === "Waiting on Client" ? "Waiting" : Task_Status === "Open - To Do" ? "Open" : Task_Status} 
+                  label={Task_Status === "In Progress - Waiting for Developer" ? "Progress" : Task_Status === "Waiting on Client" ? "Waiting" : Task_Status === "Open - To Do" ? "Open" : Task_Status} 
                   variant="outlined" 
                   sx={{
                     border: "none",

@@ -287,7 +287,9 @@ const [loading, setLoading] = useState(false) // loading button state
               options={
                 data.filter(
                   (elem) => elem.status !== "Tasks Not Assigned")
-                  .map(elem => elem.status)
+                  .map(elem => {
+                    return elem.status;
+                  })
               }
               disableCloseOnSelect
               limitTags={1}
@@ -309,12 +311,7 @@ const [loading, setLoading] = useState(false) // loading button state
                 <TextField {...params} label="Filter By Person" />
               )}
               onChange={(e, v) => {
-                setFilterProjects((prev) => {
-                  return Array.from(new Set([
-                    ...prev,
-                    ...v
-                  ]))
-                })
+                setFilterPersons(v)
               }}
             />
           </Box>
@@ -347,13 +344,13 @@ const [loading, setLoading] = useState(false) // loading button state
           }}
         >
           <Box // div that holds the category modules
-            sx={{
-              width: `calc(${data.length * 345 + 100}px)`,
+            sx={{ //data.length * 345 + 100
+              width: `calc(${filterPersons.length > 0 ? (filterPersons.length + 1) * 345 + 100 : data.length * 345 + 100}px)`,
               height: "98vh",
               backgroundColor: "#edf0f4",
               display: "flex",
               flexDirection: "row",
-              justifyContent: "space-around",
+              justifyContent: "flex-start",
               gap: "1rem",
               overflowX: "scroll",
               paddingRight: "2rem",
@@ -382,41 +379,42 @@ const [loading, setLoading] = useState(false) // loading button state
             />
 
             {
-              data?.filter((elem) => elem.status !== "Tasks Not Assigned") 
-            ?.filter(column => {
-              if(filterPersons.length > 0){
-                console.log(filterPersons.length)
-                return filterPersons?.includes(column.columnTitle)
-              } else {
-                return column;
-              }
-            })
-            ?.map((column) => {
-              return (
-                <CustomColumn
-                  key={column.id}
-                  columnTitle={column.columnTitle}
-                  numberOfTasks={
-                    cardsData?.filter((card) =>
-                      card.Assign_To.includes(column.status)
-                    ).length
-                  }
-                  backgroundColor={column.backgroundColor}
-                  borderTopColor={column.borderTopColor}
-                  otherBorders={column.otherBorders}
-                  handleAddTaskSubmit={handleAddTaskSubmit}
-                  status={column.status}
-                  cardsData={cardsData}
-                  setCardsData={setCardsData}
-                  projects={projects}
-                  handleTaskDelete={handleTaskDelete}
-                  handleEditTask={handleEditTask}
-                  filterProjects={filterProjects}
-                  loading={loading} 
-                  setLoading={setLoading}
-                />
-              );
-            })}
+              data?.filter((elem) => elem.status !== "Tasks Not Assigned")
+              ?.filter(column => {
+                if(filterPersons.length > 0){
+                  console.log(filterPersons)
+                  return filterPersons?.includes(column.columnTitle)
+                } else {
+                  return column;
+                }
+              })
+              ?.map((column) => {
+                return (
+                  <CustomColumn
+                    key={column.id}
+                    columnTitle={column.columnTitle}
+                    numberOfTasks={
+                      cardsData?.filter((card) =>
+                        card.Assign_To.includes(column.status)
+                      ).length
+                    }
+                    backgroundColor={column.backgroundColor}
+                    borderTopColor={column.borderTopColor}
+                    otherBorders={column.otherBorders}
+                    handleAddTaskSubmit={handleAddTaskSubmit}
+                    status={column.status}
+                    cardsData={cardsData}
+                    setCardsData={setCardsData}
+                    projects={projects}
+                    handleTaskDelete={handleTaskDelete}
+                    handleEditTask={handleEditTask}
+                    filterProjects={filterProjects}
+                    loading={loading} 
+                    setLoading={setLoading}
+                  />
+                );
+              })
+            }
           </Box>
         </Box>
       </Box>
