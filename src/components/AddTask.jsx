@@ -56,9 +56,9 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
     return `${year}-${month + 1}-${day < 10 ? `0${day}` : day}`;
   }
 
-  const handleChange = (value) => {
-    setSelected(value)
-  }
+  // const handleChange = (value) => {
+  //   setSelected(value)
+  // }
 
   useEffect(() => {
     reset({
@@ -68,7 +68,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
       "Name": "",
       "Task_Status": "",
       "Billable": "",
-      "Description": ""
+      // "Description": ""
     })
   }, []);
 
@@ -79,7 +79,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
     setAddCardLoading(true);
     await handleAddTaskSubmit({
       "Name": `${data.Name}`,
-      "Description": `${data.Description}`,
+      // "Description": `${data.Description}`,
       "Assign_To": selected,
       "Project_Name": data.Project_Name,
       "Account_Manager": `${data.Account_Manager}`,
@@ -95,7 +95,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
       "Name": "",
       "Task_Status": "",
       "Billable": "",
-      "Description": ""
+      // "Description": ""
     })
   
     setAddCardLoading(false);
@@ -389,7 +389,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
               </Box>
             </Box>
 
-            <Controller
+            {/* <Controller
               control={control}
               name="Description"
               render={({ field }) => (
@@ -404,7 +404,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                   />
                 </>
               )}
-            />
+            /> */}
 
             <Box
               sx={{

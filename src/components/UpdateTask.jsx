@@ -63,7 +63,7 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
       "id": singleData.id,
       "Task_ID": singleData.Task_ID,
       "Name": `${data.Name}`,
-      "Description": `${data.Description}`,
+      // "Description": `${data.Description}`,
       "Assign_To": data.Assign_To,
       "Project_Name": data.Project_Name,
       "Account_Manager": `${data.Account_Manager}`,
@@ -385,7 +385,7 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
               </Box>
             </Box>
 
-            <Controller     // task description
+            {/* <Controller     // task description
               control={control}
               name="Description"
               defaultValue={singleData.Description}
@@ -401,7 +401,7 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                   />
                 </>
               )}
-            />
+            /> */}
 
             <Box
               sx={{

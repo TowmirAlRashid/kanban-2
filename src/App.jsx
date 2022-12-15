@@ -75,7 +75,7 @@ const [loading, setLoading] = useState(false) // loading button state
     var req_data = {
       arguments: JSON.stringify({
         Task_Name: data.Name,
-        Description: data.Description,
+        // Description: data.Description,
         Assign_To: data.Assign_To,
         Project_Name: data.Project_Name,
         Account_Manager: data.Account_Manager,
@@ -137,7 +137,7 @@ const [loading, setLoading] = useState(false) // loading button state
       arguments: JSON.stringify({
         Task_Name: data.Name,
         Task_Id: data.Task_ID,
-        Description: data.Description,
+        // Description: data.Description,
         Assign_To: data.Assign_To,
         Project_Name: data.Project_Name,
         Account_Manager: data.Account_Manager,
