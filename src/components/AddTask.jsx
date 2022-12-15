@@ -75,7 +75,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
  
 
   const onsubmit = async (data) => {
-    console.log("hi")
+    // console.log("hi")
     setAddCardLoading(true);
     await handleAddTaskSubmit({
       "Name": `${data.Name}`,
@@ -99,7 +99,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
     })
   
     setAddCardLoading(false);
-      handleClose()
+    handleClose()
   }
 
   return (
@@ -416,7 +416,18 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                 gap: "1rem"
               }}
             >
-              <Button onClick={handleClose} variant="outlined">Cancel</Button>
+              <Button onClick={() => {
+                reset({
+                  "Assign_To": [name],
+                  "Project_Name": null,
+                  "Account_Manager": "",
+                  "Name": "",
+                  "Task_Status": "",
+                  "Billable": "",
+                  // "Description": ""
+                })
+                handleClose()
+              }} variant="outlined">Cancel</Button>
               <LoadingButton 
                 variant='contained' 
                 type='button' 

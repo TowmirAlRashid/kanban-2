@@ -21,7 +21,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function AlertDialogSlide({ openTask, handleEditClose, handleEditTask, projects, singleData, loading }) {
   const [updateLoader, setUpdateLoader] = useState(loading)
-  const { control, handleSubmit,  formState: { errors } } = useForm(singleData);
+  const { control, handleSubmit, reset,  formState: { errors } } = useForm(singleData);
 
   const getProjects = (arrayOfProjects) => {
     const arrayOfProjectNames = arrayOfProjects.filter(singleData => singleData.Project_ID !== null).map(singleData => {
@@ -413,7 +413,17 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                 gap: "1rem"
               }}
             >
-              <Button onClick={handleEditClose} variant="outlined">Cancel</Button>
+              <Button onClick={() => {
+                reset({
+                  "Assign_To": singleData.Assign_To,
+                  "Project_Name": null,
+                  "Account_Manager": "",
+                  "Name": "",
+                  "Task_Status": "",
+                  "Billable": "",
+                  // "Description": ""
+                })
+                handleEditClose()}} variant="outlined">Cancel</Button>
               <LoadingButton
                 variant='contained' 
                 type='button'
