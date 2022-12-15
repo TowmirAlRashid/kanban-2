@@ -233,27 +233,26 @@ const [loading, setLoading] = useState(false) // loading button state
     <div>
       <Box // parent div to hold the app
         sx={{
-          width: "auto",
+          width: "100%",
           height: "100vh",
-          overflowX: "auto",
           backgroundColor: "#edf0f4",
         }}
       >
         <Box
           sx={{
-            width: "94%",
-            margin: "10px auto",
-            padding: "20px 20px 0",
-            display: `${expand ? "flex" : "none"}`,
-            flexDirection: "row",
+            width: "99%",
+            pt: "2rem",
+            display: "flex",
             justifyContent: "space-between",
-            alignItems: "center",
+            alignItems: "flex-start",
+            flexDirection: "row"
           }}
         >
           <Typography
             sx={{
               fontSize: "24px",
               fontWeight: "500",
+              ml: "1.5rem"
             }}
           >
             Boosted CRM Tasks Board
@@ -262,115 +261,119 @@ const [loading, setLoading] = useState(false) // loading button state
           <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: "1rem",
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              alignItems: "flex-end",
+              gap: "1rem"
             }}
           >
-            <Typography>Sort By</Typography>
-
-            <Autocomplete
-              multiple
-              id="filterByProject"
-              options={getProjectNames(projects)}
-              limitTags={1}
-              size="small"
-              disableCloseOnSelect
-              getOptionLabel={(option) => option}
-              renderOption={(props, option, { selected }) => (
-                <li {...props}>
-                  <Checkbox
-                    icon={icon}
-                    checkedIcon={checkedIcon}
-                    style={{ marginRight: 8 }}
-                    checked={selected}
-                  />
-                  {option}
-                </li>
-              )}
-              style={{ width: 300 }}
-              renderInput={(params) => (
-                <TextField {...params} label="Filter By Project" />
-              )}
-              onChange={(e, v) => {
-                setFilterProjects(v)
+            <Box
+              sx={{
+                display: `${expand ? "flex" : "none"}`,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: "1rem",
               }}
-            />
+            >
+              <Typography>Sort By</Typography>
 
-            <Autocomplete
-              multiple
-              id="filterByPerson"
-              options={
-                data.filter(
-                  (elem) => elem.status !== "Tasks Not Assigned")
-                  .map(elem => {
-                    return elem.status;
-                  })
-              }
-              disableCloseOnSelect
-              limitTags={1}
-              size="small"
-              getOptionLabel={(option) => option}
-              renderOption={(props, option, { selected }) => (
-                <li {...props}>
-                  <Checkbox
-                    icon={icon}
-                    checkedIcon={checkedIcon}
-                    style={{ marginRight: 8 }}
-                    checked={selected}
-                  />
-                  {option}
-                </li>
-              )}
-              style={{ width: 300 }}
-              renderInput={(params) => (
-                <TextField {...params} label="Filter By Person" />
-              )}
-              onChange={(e, v) => {
-                setFilterPersons(v)
-              }}
-            />
+              <Autocomplete
+                multiple
+                id="filterByProject"
+                options={getProjectNames(projects)}
+                limitTags={1}
+                size="small"
+                disableCloseOnSelect
+                getOptionLabel={(option) => option}
+                renderOption={(props, option, { selected }) => (
+                  <li {...props}>
+                    <Checkbox
+                      icon={icon}
+                      checkedIcon={checkedIcon}
+                      style={{ marginRight: 8 }}
+                      checked={selected}
+                    />
+                    {option}
+                  </li>
+                )}
+                style={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Filter By Project" />
+                )}
+                onChange={(e, v) => {
+                  setFilterProjects(v)
+                }}
+              />
+
+              <Autocomplete
+                multiple
+                id="filterByPerson"
+                options={
+                  data.filter(
+                    (elem) => elem.status !== "Tasks Not Assigned")
+                    .map(elem => {
+                      return elem.status;
+                    })
+                }
+                disableCloseOnSelect
+                limitTags={1}
+                size="small"
+                getOptionLabel={(option) => option}
+                renderOption={(props, option, { selected }) => (
+                  <li {...props}>
+                    <Checkbox
+                      icon={icon}
+                      checkedIcon={checkedIcon}
+                      style={{ marginRight: 8 }}
+                      checked={selected}
+                    />
+                    {option}
+                  </li>
+                )}
+                style={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Filter By Person" />
+                )}
+                onChange={(e, v) => {
+                  setFilterPersons(v)
+                }}
+              />
+            </Box>
+
+            <Button
+              variant="contained"
+              endIcon={expand ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              onClick={() => setExpand(!expand)}
+            >
+              Filter Options
+            </Button>
           </Box>
-        </Box>
-
-        <Box
-          sx={{
-            width: "92%",
-            margin: "10px auto",
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "flex-end",
-          }}
-        >
-          <Button
-            variant="contained"
-            endIcon={expand ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-            onClick={() => setExpand(!expand)}
-          >
-            Filter Options
-          </Button>
         </Box>
 
         <Box // div that holds the card modules
           sx={{
-            width: "94%",
-            height: "100%",
-            margin: "10px auto",
-            padding: "20px 20px 20px",
+            width: "auto",
+            overflowX: "auto",
+            ml: "5rem",
+            height: `${expand ? "84vh" : "91vh"}`,
+            margin: "10px auto 0",
+            padding: "20px 20px 0px",
+            backgroundColor: "#edf0f4",
           }}
         >
           <Box // div that holds the category modules
             sx={{ //data.length * 345 + 100
               width: `calc(${filterPersons.length > 0 ? (filterPersons.length + 1) * 345 + 100 : data.length * 345 + 100}px)`,
-              height: "98vh",
+              height: "100%",
               backgroundColor: "#edf0f4",
               display: "flex",
               flexDirection: "row",
               justifyContent: "flex-start",
               gap: "1rem",
-              overflowX: "scroll",
+              // overflowX: "scroll",
               paddingRight: "2rem",
+              paddingleft: "2rem",
             }}
           >
             <CustomColumn 
