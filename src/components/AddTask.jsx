@@ -19,7 +19,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function AlertDialogSlide({ open, handleClose, name, handleAddTaskSubmit, projects, loading }) {
-  // console.log({loading})
+  // console.log({projects})
   const [addCardLoading, setAddCardLoading] = useState(loading);
   const { control, handleSubmit, reset, formState: { errors } } = useForm();
 
@@ -178,7 +178,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                       <Autocomplete
                         {...field}
                         disablePortal
-                        options={getProjects(projects)}
+                        options={projects}
                         getOptionLabel={(option) => option.Project_Name ? option.Project_Name : ""}
                         onChange={(_, data) => {
                           field.onChange({ Project_Name: data?.Project_Name, Project_ID: data?.Project_ID })

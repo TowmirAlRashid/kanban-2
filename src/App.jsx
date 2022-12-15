@@ -36,7 +36,6 @@ const [loading, setLoading] = useState(false) // loading button state
 
   useEffect(() => {
     ZOHO.embeddedApp.on("PageLoad", function (data) {
-      console.log(data);
       setInitialized(true);
     });
 
@@ -45,17 +44,39 @@ const [loading, setLoading] = useState(false) // loading button state
 
   useEffect(() => {
     if (initialized) {
-      ZOHO.CRM.API.getAllRecords({
-        Entity: "ZP_Tasks",
-        sort_order: "desc",
-        per_page: 200,
-        page: 1,
-      }).then(function (data) {
+
+      const conn_name = "zoho_crm_conn";
+      let req_data = {
+        parameters: {
+          select_query:
+            "select Account_Manager, Assign_To, Billable, Billable_log_in_Minutes, Due_Date, Project_ID, Project_Name, Task_ID, Task_List_ID, Task_Status, Name from ZP_Tasks where Task_Status != 'Closed'",
+        },
+        method: "POST",
+        url: "https://www.zohoapis.com/crm/v3/coql",
+        param_type: 2,
+      };
+      ZOHO.CRM.CONNECTION.invoke(conn_name, req_data).then(function (data) {
+        
         setCardsData(
-          data.data?.filter((singleData) => singleData.Assign_To !== null)
+          data?.details?.statusMessage?.data?.filter((singleData) => singleData.Assign_To !== null)
         );
+      });
+
+
+      const projects_conn_name = "zoho_project_conn";
+      let req_data_for_projects = {
+        method: "GET",
+        url: "https://projectsapi.zoho.com/restapi/portal/boostedcrm/projects/",
+      };
+      ZOHO.CRM.CONNECTION.invoke(projects_conn_name, req_data_for_projects).then(function (data) {
+        console.log(data)
         setProjects(
-          data.data?.filter((singleData) => singleData.Project_Name !== null)
+          data?.details?.statusMessage?.projects?.map((singleData) => {
+            return {
+              Project_Name: singleData.name,
+              Project_ID: singleData.id_string
+            }
+          })
         );
       });
     }
@@ -63,6 +84,7 @@ const [loading, setLoading] = useState(false) // loading button state
 
 
   const handleAddTaskSubmit = async (data) => {
+    console.log(data)
     const { Project_Name, ...rest } = data;
     var recordData = {
       Project_Name: Project_Name.Project_Name,
