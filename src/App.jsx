@@ -15,6 +15,7 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import NotAssignedColumn from "./components/NotAssignedColumn";
 
 const ZOHO = window.ZOHO;
 
@@ -29,8 +30,12 @@ function App() {
   const [projects, setProjects] = useState([]);
 
   const [expand, setExpand] = useState(false);
+
+  const columnFixedOption = [data[0].columnTitle]
+
   const [filterProjects, setFilterProjects] = useState([]);
-  const [filterPersons, setFilterPersons] = useState([]);
+  const [filterPersons, setFilterPersons] = useState([ ]);
+  const [filterStatus, setFilterStatus] = useState([])
 
 const [loading, setLoading] = useState(false) // loading button state
 
@@ -60,6 +65,7 @@ const [loading, setLoading] = useState(false) // loading button state
         setCardsData(
           data?.details?.statusMessage?.data?.filter((singleData) => singleData.Assign_To !== null)
         );
+        console.log(cardsData)
       });
 
 
@@ -84,28 +90,43 @@ const [loading, setLoading] = useState(false) // loading button state
 
 
   const handleAddTaskSubmit = async (data) => {
-    console.log(data)
+    // console.log(data)
     const { Project_Name, ...rest } = data;
     var recordData = {
       Project_Name: Project_Name.Project_Name,
       ...rest,
     };
 
+    console.log(recordData)
+
     // Send data to Standalone Function
     // Billable_log_in_Minutes
     const func_name = "bcrm_zp_widget_integration";
-    var req_data = {
-      arguments: JSON.stringify({
-        Task_Name: data.Name,
-        // Description: data.Description,
-        Assign_To: data.Assign_To,
-        Project_Name: data.Project_Name,
-        Account_Manager: data.Account_Manager,
-        Due_Date: data.Due_Date,
-        Task_Status: data.Task_Status,
-        Billable: data.Billable,
-      }),
-    };
+    if(data?.Assign_To.includes("Tasks Not Assigned")){
+      var req_data = {
+        arguments: JSON.stringify({
+          Task_Name: data.Name,
+          // Assign_To: data.Assign_To,
+          Project_Name: data.Project_Name,
+          Account_Manager: data.Account_Manager,
+          Due_Date: data.Due_Date,
+          Task_Status: data.Task_Status,
+          Billable: data.Billable,
+        }),
+      };
+    } else {
+      var req_data = {
+        arguments: JSON.stringify({
+          Task_Name: data.Name,
+          Assign_To: data.Assign_To,
+          Project_Name: data.Project_Name,
+          Account_Manager: data.Account_Manager,
+          Due_Date: data.Due_Date,
+          Task_Status: data.Task_Status,
+          Billable: data.Billable,
+        }),
+      };
+    }
 
     try {
       const crmStandaloneResp = await ZOHO.CRM.FUNCTIONS.execute(
@@ -124,18 +145,30 @@ const [loading, setLoading] = useState(false) // loading button state
       const projectId = getUrlInArray?.[5]
       const taskListId = getUrlInArray?.[6]
       const taskId = getUrlInArray?.[7]
-      console.log("getUrlInArray", getUrlInArray);
 
       if (tasks[0].name === recordData.Name) {
-        setCardsData([
-          ...cardsData,
-          {
-            ...recordData,
-            Project_ID: projectId,
-            Task_List_ID: taskListId,
-            Task_ID: taskId
-          },
-        ]);
+        if(data?.Assign_To?.includes("Tasks Not Assigned")){
+          setCardsData([
+            ...cardsData,
+            {
+              ...recordData,
+              Project_ID: projectId,
+              Task_List_ID: taskListId,
+              Task_ID: taskId,
+              Assign_To: ["Tasks Not Assigned"]
+            },
+          ]);
+        } else {
+          setCardsData([
+            ...cardsData,
+            {
+              ...recordData,
+              Project_ID: projectId,
+              Task_List_ID: taskListId,
+              Task_ID: taskId
+            },
+          ]);
+        }
 
         setLoading(false)
       }
@@ -251,6 +284,10 @@ const [loading, setLoading] = useState(false) // loading button state
     return uniqueArrayOfProjectNames;
   };
 
+  const statusOptions = ["Open - To Do", "Analysis", "In Progress - Waiting for Developer", "Waiting on Client", "QA", "UAT", "Backlog"]
+
+
+
   return (
     <div>
       <Box // parent div to hold the app
@@ -300,6 +337,7 @@ const [loading, setLoading] = useState(false) // loading button state
             >
               <Typography>Sort By</Typography>
 
+              {/* filter by projects */}
               <Autocomplete
                 multiple
                 id="filterByProject"
@@ -328,12 +366,13 @@ const [loading, setLoading] = useState(false) // loading button state
                 }}
               />
 
+              {/* filter by persons */}
               <Autocomplete
                 multiple
                 id="filterByPerson"
+                value={filterPersons}
                 options={
-                  data.filter(
-                    (elem) => elem.status !== "Tasks Not Assigned")
+                  data
                     .map(elem => {
                       return elem.status;
                     })
@@ -358,18 +397,60 @@ const [loading, setLoading] = useState(false) // loading button state
                   <TextField {...params} label="Filter By Person" />
                 )}
                 onChange={(e, v) => {
-                  setFilterPersons(v)
+                  setFilterPersons([
+                    "Tasks Not Assigned",
+                    v
+                  ])
+                }}
+              />
+
+              {/* filter by status */}
+              <Autocomplete
+                multiple
+                id="filterByStatus"
+                options={statusOptions}
+                disableCloseOnSelect
+                limitTags={1}
+                size="small"
+                getOptionLabel={(option) => option}
+                renderOption={(props, option, { selected }) => (
+                  <li {...props}>
+                    <Checkbox
+                      icon={icon}
+                      checkedIcon={checkedIcon}
+                      style={{ marginRight: 8 }}
+                      checked={selected}
+                    />
+                    {option}
+                  </li>
+                )}
+                style={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Filter By Status" />
+                )}
+                onChange={(e, v) => {
+                  setFilterStatus(v)
                 }}
               />
             </Box>
 
-            <Button
-              variant="contained"
-              endIcon={expand ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-              onClick={() => setExpand(!expand)}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flex-end",
+                alignItems: "flex-end",
+                gap: "1rem"
+              }}
             >
-              Filter Options
-            </Button>
+              <Button
+                variant="contained"
+                endIcon={expand ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                onClick={() => setExpand(!expand)}
+              >
+                Filter Options
+              </Button>
+            </Box>
           </Box>
         </Box>
 
@@ -386,7 +467,7 @@ const [loading, setLoading] = useState(false) // loading button state
         >
           <Box // div that holds the category modules
             sx={{ //data.length * 345 + 100
-              width: `calc(${filterPersons.length > 0 ? (filterPersons.length + 1) * 345 + 100 : data.length * 345 + 100}px)`,
+              width: `calc(${filterPersons.length > 0 ? (filterPersons.length) * 345 + 100 : data.length * 345 + 100}px)`,
               height: "100%",
               backgroundColor: "#edf0f4",
               display: "flex",
@@ -398,30 +479,8 @@ const [loading, setLoading] = useState(false) // loading button state
               paddingleft: "2rem",
             }}
           >
-            <CustomColumn 
-              columnTitle={data[0].columnTitle}
-              backgroundColor={data[0].backgroundColor}
-              borderTopColor={data[0].borderTopColor}
-              otherBorders={data[0].otherBorders}
-              numberOfTasks={
-                cardsData?.filter((card) =>
-                  card.Assign_To.includes(data[0].status)
-                ).length
-              }
-              handleAddTaskSubmit={handleAddTaskSubmit}
-              status={data[0].status}
-              cardsData={cardsData}
-              setCardsData={setCardsData}
-              projects={projects}
-              handleTaskDelete={handleTaskDelete}
-              handleEditTask={handleEditTask}
-              filterProjects={filterProjects}
-              loading={loading} 
-              setLoading={setLoading}
-            />
-
             {
-              data?.filter((elem) => elem.status !== "Tasks Not Assigned")
+              data
               ?.filter(column => {
                 if(filterPersons.length > 0){
                   console.log(filterPersons)
@@ -436,9 +495,7 @@ const [loading, setLoading] = useState(false) // loading button state
                     key={column.id}
                     columnTitle={column.columnTitle}
                     numberOfTasks={
-                      cardsData?.filter((card) =>
-                        card.Assign_To.includes(column.status)
-                      ).length
+                      cardsData?.filter((card) => card?.Assign_To?.includes(column.status)).length
                     }
                     backgroundColor={column.backgroundColor}
                     borderTopColor={column.borderTopColor}
@@ -453,6 +510,7 @@ const [loading, setLoading] = useState(false) // loading button state
                     filterProjects={filterProjects}
                     loading={loading} 
                     setLoading={setLoading}
+                    filterStatus={filterStatus}
                   />
                 );
               })

@@ -19,7 +19,8 @@ const CustomColumn = ({
     filterProjects,
     loading, 
     setLoading,
-    setCardsData
+    setCardsData,
+    filterStatus
 }) => {
 
     // console.log({filterProjects})
@@ -62,8 +63,14 @@ const CustomColumn = ({
                 cardsData?.filter((singleData) => singleData?.Assign_To?.includes(status))
                 .filter(singleData => {
                     if(filterProjects.length > 0){
-                        
                         return filterProjects?.includes(singleData?.Project_Name)
+                    } else {
+                        return singleData;
+                    }
+                })
+                .filter(singleData => {
+                    if(filterStatus.length > 0){
+                        return filterStatus?.includes(singleData?.Task_Status)
                     } else {
                         return singleData;
                     }
