@@ -31,8 +31,6 @@ function App() {
 
   const [expand, setExpand] = useState(false);
 
-  const columnFixedOption = [data[0].columnTitle]
-
   const [filterProjects, setFilterProjects] = useState([]);
   const [filterPersons, setFilterPersons] = useState([ ]);
   const [filterStatus, setFilterStatus] = useState([])
@@ -90,7 +88,6 @@ const [loading, setLoading] = useState(false) // loading button state
 
 
   const handleAddTaskSubmit = async (data) => {
-    // console.log(data)
     const { Project_Name, ...rest } = data;
     var recordData = {
       Project_Name: Project_Name.Project_Name,
@@ -115,7 +112,7 @@ const [loading, setLoading] = useState(false) // loading button state
         }),
       };
     } else {
-      var req_data = {
+      req_data = {
         arguments: JSON.stringify({
           Task_Name: data.Name,
           Assign_To: data.Assign_To,
@@ -147,7 +144,8 @@ const [loading, setLoading] = useState(false) // loading button state
       const taskId = getUrlInArray?.[7]
 
       if (tasks[0].name === recordData.Name) {
-        if(data?.Assign_To?.includes("Tasks Not Assigned")){
+        if(recordData?.Assign_To?.includes("Tasks Not Assigned")){
+          // console.log(recordData?.Assign_To?.includes("Tasks Not Assigned"), "tasks not assigned")
           setCardsData([
             ...cardsData,
             {
@@ -155,7 +153,7 @@ const [loading, setLoading] = useState(false) // loading button state
               Project_ID: projectId,
               Task_List_ID: taskListId,
               Task_ID: taskId,
-              Assign_To: ["Tasks Not Assigned"]
+              Assign_To: ["null"]
             },
           ]);
         } else {
@@ -188,19 +186,33 @@ const [loading, setLoading] = useState(false) // loading button state
     // Send data to Standalone Function
     // Billable_log_in_Minutes
     const func_name = "bcrm_zp_widget_integration";
-    var req_data = {
-      arguments: JSON.stringify({
-        Task_Name: data.Name,
-        Task_Id: data.Task_ID,
-        // Description: data.Description,
-        Assign_To: data.Assign_To,
-        Project_Name: data.Project_Name,
-        Account_Manager: data.Account_Manager,
-        Due_Date: data.Due_Date,
-        Task_Status: data.Task_Status,
-        Billable: data.Billable,
-      }),
-    };
+    if(data?.Assign_To.includes("Tasks Not Assigned")){
+      var req_data = {
+        arguments: JSON.stringify({
+          Task_Name: data.Name,
+          Task_Id: data.Task_ID,
+          // Assign_To: data.Assign_To,
+          Project_Name: data.Project_Name,
+          Account_Manager: data.Account_Manager,
+          Due_Date: data.Due_Date,
+          Task_Status: data.Task_Status,
+          Billable: data.Billable,
+        }),
+      };
+    } else {
+      req_data = {
+        arguments: JSON.stringify({
+          Task_Name: data.Name,
+          Task_Id: data.Task_ID,
+          Assign_To: data.Assign_To,
+          Project_Name: data.Project_Name,
+          Account_Manager: data.Account_Manager,
+          Due_Date: data.Due_Date,
+          Task_Status: data.Task_Status,
+          Billable: data.Billable,
+        }),
+      };
+    }
     // const crmStandaloneResp = await ZOHO.CRM.FUNCTIONS.execute(func_name, req_data)
     // console.log("Response from Standalone ", crmStandaloneResp)
 
@@ -218,22 +230,38 @@ const [loading, setLoading] = useState(false) // loading button state
       const getUrlInArray = tasks[0]?.link?.web?.url.split("/");  // gets the url in splitted array from the standalone response
       const projectId = getUrlInArray?.[5]
       const taskListId = getUrlInArray?.[6]
-      console.log("getUrlInArray", getUrlInArray);
+      // console.log("getUrlInArray", getUrlInArray);
 
       console.log(tasks[0].name, recordData.Name);
       if (tasks[0].name === recordData.Name) {
-        setCardsData(
-          cardsData.map((card) => {
-            if (card.id === recordData.id) {
-              return {
-                ...recordData,
-                Project_ID: projectId,
-                Task_List_ID: taskListId,
-              };
-            }
-            return card;
-          })
-        );
+        if(!recordData?.Assign_To?.includes("Tasks Not Assigned")) {
+          setCardsData(
+            cardsData.map((card) => {
+              if (card.id === recordData.id) {
+                return {
+                  ...recordData,
+                  Project_ID: projectId,
+                  Task_List_ID: taskListId,
+                };
+              }
+              return card;
+            })
+          );
+        } else {
+          setCardsData(
+            cardsData.map((card) => {
+              if (card.id === recordData.id) {
+                return {
+                  ...recordData,
+                  Project_ID: projectId,
+                  Task_List_ID: taskListId,
+                };
+              }
+              return card;
+            })
+          );
+        }
+        
         setLoading(false)
       }
 
@@ -284,7 +312,7 @@ const [loading, setLoading] = useState(false) // loading button state
     return uniqueArrayOfProjectNames;
   };
 
-  const statusOptions = ["Open - To Do", "Analysis", "In Progress - Waiting for Developer", "Waiting on Client", "QA", "UAT", "Backlog"]
+  const statusOptions = ["Open - To Do", "Analysis", "In Progress - Waiting for Developer", "Waiting on Client", "QA", "UAT"]
 
 
 
@@ -372,7 +400,7 @@ const [loading, setLoading] = useState(false) // loading button state
                 id="filterByPerson"
                 value={filterPersons}
                 options={
-                  data
+                  data?.filter(elem => elem.status !== "Tasks Not Assigned")
                     .map(elem => {
                       return elem.status;
                     })
@@ -464,7 +492,7 @@ const [loading, setLoading] = useState(false) // loading button state
         >
           <Box // div that holds the category modules
             sx={{ //data.length * 345 + 100
-              width: `calc(${filterPersons.length > 0 ? (filterPersons.length) * 345 + 100 : data.length * 345 + 100}px)`,
+              width: `calc(${filterPersons.length > 0 ? (filterPersons.length + 1) * 345 + 100 : data.length * 345 + 100}px)`,
               height: "100%",
               backgroundColor: "#edf0f4",
               display: "flex",
@@ -476,8 +504,30 @@ const [loading, setLoading] = useState(false) // loading button state
               paddingleft: "2rem",
             }}
           >
+            <NotAssignedColumn
+              key={data[0].id}
+              columnTitle={data[0].columnTitle}
+              numberOfTasks={
+                cardsData?.filter((card) => card?.Assign_To?.includes("null")).length
+              }
+              backgroundColor={data[0].backgroundColor}
+              borderTopColor={data[0].borderTopColor}
+              otherBorders={data[0].otherBorders}
+              handleAddTaskSubmit={handleAddTaskSubmit}
+              status={data[0].status}
+              cardsData={cardsData}
+              setCardsData={setCardsData}
+              projects={projects}
+              handleTaskDelete={handleTaskDelete}
+              handleEditTask={handleEditTask}
+              filterProjects={filterProjects}
+              loading={loading} 
+              setLoading={setLoading}
+              filterStatus={filterStatus}
+            />
+
             {
-              data
+              data?.filter(column => column.status !== "Tasks Not Assigned")
               ?.filter(column => {
                 if(filterPersons.length > 0){
                   console.log(filterPersons)

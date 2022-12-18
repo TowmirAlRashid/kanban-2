@@ -19,7 +19,8 @@ const NotAssignedColumn = ({
     filterProjects,
     loading, 
     setLoading,
-    setCardsData
+    setCardsData,
+    filterStatus
 }) => {
 
   return (
@@ -43,10 +44,17 @@ const NotAssignedColumn = ({
         />
               
         {
-                cardsData?.filter((singleData) => singleData?.Assign_To?.includes("max") || singleData?.Assign_To?.includes("null"))
+                cardsData?.filter((singleData) => singleData?.Assign_To?.includes("null"))
                 .filter(singleData => {
                     if(filterProjects.length > 0){
                         return filterProjects?.includes(singleData?.Project_Name)
+                    } else {
+                        return singleData;
+                    }
+                })
+                .filter(singleData => {
+                    if(filterStatus.length > 0){
+                        return filterStatus?.includes(singleData?.Task_Status)
                     } else {
                         return singleData;
                     }
