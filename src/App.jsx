@@ -397,10 +397,7 @@ const [loading, setLoading] = useState(false) // loading button state
                   <TextField {...params} label="Filter By Person" />
                 )}
                 onChange={(e, v) => {
-                  setFilterPersons([
-                    "Tasks Not Assigned",
-                    v
-                  ])
+                  setFilterPersons(v)
                 }}
               />
 
