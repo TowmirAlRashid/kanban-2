@@ -147,6 +147,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                       id="size-small-outlined-multi"
                       size="small"
                       options={assignedToOptions}
+                      disabled
                       getOptionLabel={(option) => option}
                       onChange={(_, data) => field.onChange(data)}
                       renderInput={(params) => (

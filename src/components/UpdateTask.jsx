@@ -123,6 +123,7 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                       multiple
                       id="size-small-outlined-multi"
                       size="small"
+                      disabled
                       options={assignedToOptions}
                       getOptionLabel={(option) => option}
                       onChange={(_, data) => field.onChange(data)}

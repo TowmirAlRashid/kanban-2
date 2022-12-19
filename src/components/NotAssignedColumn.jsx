@@ -74,31 +74,6 @@ const NotAssignedColumn = ({
                     />
                 ))
         }
-
-        {
-            // (cardsData?.filter(singleData => singleData?.Assign_To?.includes(status)).length === 0 || cardsData?.filter((singleData) => filterProjects.includes(singleData.Project_Name)).length === 0) && <NoEngagement />
-        }
-
-        {
-            // filterProjects?.length > 0 && cardsData?.filter(singleData => singleData?.Assign_To?.includes(status)).length === 0 && <NoEngagement />
-        }
-
-        {
-            // filterProjects?.length > 0 && cardsData?.filter(singleData => singleData?.Assign_To?.includes(status)).length > 0 && !filterProjects?.includes(status) && <NoEngagement />
-        }
-
-        {
-            // (cardsData?.filter((singleData) => singleData?.Assign_To?.includes(status)).length > 0) && (cardsData?.filter((singleData) => filterProjects.includes(singleData.Project_Name)).length === 0) && <NoEngagement />
-        }
-
-        {
-            // cardsData?.filter(singleData => filterProjects?.includes(singleData?.Project_Name)).length === 0 && <NoEngagement />
-            // console.log(cardsData)
-        }
-
-        {
-            // console.log("filterProjects", cardsData?.filter((singleData) => filterProjects.includes(singleData.Project_Name)).length)
-        }
     </Box>
   )
 }
