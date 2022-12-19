@@ -52,14 +52,14 @@ const [loading, setLoading] = useState(false) // loading button state
       let req_data = {
         parameters: {
           select_query:
-            "select Account_Manager, Assign_To, Billable, Billable_log_in_Minutes, Due_Date, Project_ID, Project_Name, Task_ID, Task_List_ID, Task_Status, Name from ZP_Tasks where Task_Status != 'Closed'",
+            "select Account_Manager, Assign_To, Billable, Billable_log_in_Minutes, Due_Date, Project_ID, Project_Name, Task_ID, Task_List_ID, Task_Status, Name from ZP_Tasks where ((Task_Status != 'Closed' and Task_Status != 'Backlog') and Name not in ('Creds', 'Cred') )",
         },
         method: "POST",
         url: "https://www.zohoapis.com/crm/v3/coql",
         param_type: 2,
       };
       ZOHO.CRM.CONNECTION.invoke(conn_name, req_data).then(function (data) {
-        
+        console.log({data})
         setCardsData(
           data?.details?.statusMessage?.data?.filter((singleData) => singleData.Assign_To !== null)
         );
@@ -178,6 +178,7 @@ const [loading, setLoading] = useState(false) // loading button state
 
   const handleEditTask = async (data) => {
     const { Project_Name, ...rest } = data;
+    // console.log(data)
     var recordData = {
       Project_Name: Project_Name.Project_Name,
       ...rest,
@@ -186,19 +187,34 @@ const [loading, setLoading] = useState(false) // loading button state
     // Send data to Standalone Function
     // Billable_log_in_Minutes
     const func_name = "bcrm_zp_widget_integration";
-    if(data?.Assign_To.includes("Tasks Not Assigned")){
-      var req_data = {
-        arguments: JSON.stringify({
-          Task_Name: data.Name,
-          Task_Id: data.Task_ID,
-          // Assign_To: data.Assign_To,
-          Project_Name: data.Project_Name,
-          Account_Manager: data.Account_Manager,
-          Due_Date: data.Due_Date,
-          Task_Status: data.Task_Status,
-          Billable: data.Billable,
-        }),
-      };
+    if(data?.Assign_To.includes("null")){
+      if(data?.Assign_To.includes("null") && data?.Assign_To.length === 1) {
+        var req_data = {
+          arguments: JSON.stringify({
+            Task_Name: data.Name,
+            Task_Id: data.Task_ID,
+            // Assign_To: data.Assign_To,
+            Project_Name: data.Project_Name,
+            Account_Manager: data.Account_Manager,
+            Due_Date: data.Due_Date,
+            Task_Status: data.Task_Status,
+            Billable: data.Billable,
+          }),
+        };
+      } else {
+        req_data = {
+          arguments: JSON.stringify({
+            Task_Name: data.Name,
+            Task_Id: data.Task_ID,
+            Assign_To: data.Assign_To,
+            Project_Name: data.Project_Name,
+            Account_Manager: data.Account_Manager,
+            Due_Date: data.Due_Date,
+            Task_Status: data.Task_Status,
+            Billable: data.Billable,
+          }),
+        };
+      }
     } else {
       req_data = {
         arguments: JSON.stringify({
@@ -234,19 +250,31 @@ const [loading, setLoading] = useState(false) // loading button state
 
       console.log(tasks[0].name, recordData.Name);
       if (tasks[0].name === recordData.Name) {
-        if(!recordData?.Assign_To?.includes("Tasks Not Assigned")) {
-          setCardsData(
-            cardsData.map((card) => {
-              if (card.id === recordData.id) {
-                return {
-                  ...recordData,
-                  Project_ID: projectId,
-                  Task_List_ID: taskListId,
-                };
-              }
-              return card;
-            })
-          );
+        if(!recordData?.Assign_To?.includes("null")) {
+          if(recordData.Task_Status === "Closed"){
+            // console.log("index", cardsData.indexOf(recordData.id))
+            const targetTask = (task) => {
+              return task.id === recordData.id
+            }
+
+            const index = cardsData.indexOf(cardsData.find(targetTask));
+            if(index > -1){
+              setCardsData(cardsData?.filter((card) => card.id !== recordData.id))
+            }
+          } else {
+            setCardsData(
+              cardsData.map((card) => {
+                if (card.id === recordData.id) {
+                  return {
+                    ...recordData,
+                    Project_ID: projectId,
+                    Task_List_ID: taskListId,
+                  };
+                }
+                return card;
+              })
+            );
+          }
         } else {
           setCardsData(
             cardsData.map((card) => {
