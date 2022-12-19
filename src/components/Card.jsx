@@ -64,6 +64,14 @@ const CustomCard = ({ singleData, handleTaskDelete, handleEditTask, projects, lo
     return `https://projects.zoho.com/portal/boostedcrm#taskdetail/${projectId}/${taskListId}/${taskId}`
   }
 
+  // check if the due date is over
+  const checkDueDate = (date) => {
+    let givenDate = new Date(date);
+    let today = new Date();
+
+    return givenDate > today;
+  }
+
   return (
     <>
       <Card 
@@ -223,7 +231,7 @@ const CustomCard = ({ singleData, handleTaskDelete, handleEditTask, projects, lo
                   sx={{
                     fontSize: "12px",
                     fontWeight: "400",
-                    color: "#EF5350",
+                    color: `${checkDueDate(Due_Date) ? "#757575" : "#EF5350"}`,
                     lineHeight: "16px"
                   }}
                 >
