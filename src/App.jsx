@@ -276,18 +276,29 @@ const [loading, setLoading] = useState(false) // loading button state
             );
           }
         } else {
-          setCardsData(
-            cardsData.map((card) => {
-              if (card.id === recordData.id) {
-                return {
-                  ...recordData,
-                  Project_ID: projectId,
-                  Task_List_ID: taskListId,
-                };
-              }
-              return card;
-            })
-          );
+          if(recordData.Task_Status === "Closed"){
+            const targetTask = (task) => {
+              return task.id === recordData.id
+            }
+
+            const index = cardsData.indexOf(cardsData.find(targetTask));
+            if(index > -1){
+              setCardsData(cardsData?.filter((card) => card.id !== recordData.id))
+            }
+          } else {
+            setCardsData(
+              cardsData.map((card) => {
+                if (card.id === recordData.id) {
+                  return {
+                    ...recordData,
+                    Project_ID: projectId,
+                    Task_List_ID: taskListId,
+                  };
+                }
+                return card;
+              })
+            );
+          }
         }
         
         setLoading(false)
