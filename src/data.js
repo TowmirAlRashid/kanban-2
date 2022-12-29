@@ -57,11 +57,11 @@ const data = [
     },
     {
         id: 8,
-        columnTitle: "Binal",
+        columnTitle: "Shawn",
         backgroundColor: "#f7dae4",
         borderTopColor: "#dca2b6",
         otherBorders: "#eecbd7",
-        status: "Binal"
+        status: "Shawn"
     },
     {
         id: 9,
