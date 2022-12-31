@@ -37,13 +37,13 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
     return uniqueArrayOfProjectNames;
   }
 
-  const accountManagers = ["Maddie", "Hoang", "Michael", "Baz"]
+  const accountManagers = ["Maddie Hassan", "Hoang Tran Pham", "Michael Yana", "Baz Destiny"]
 
   const taskStatus = ["Open - To Do", "Analysis", "In Progress - Waiting for Developer", "Waiting on Client", "QA", "UAT", "Closed", "Backlog"]
 
   const billable = ["Yes", "No"]
 
-  const assignedToOptions = ["Baz", "Binal", "Emranul", "Hoang", "Maddie", "Michael", "Mark", "Rowel"]
+  const assignedToOptions = ["Baz Destiny", "Ih shawn", "Emranul Hassan", "Hoang Tran Pham", "Maddie Hassan", "Michael Yana", "Boosted CRM", "Rowel Sabas"]
 
   const customDate = (date) => {
     const dateObj = new Date(date);
