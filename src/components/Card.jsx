@@ -91,8 +91,8 @@ const CustomCard = ({ singleData, handleTaskDelete, handleEditTask, projects, lo
     <>
       <Card 
         sx={{ 
-          width: `${Is_Subtask ? '95%' : '100%'}`, 
-          margin: `${Is_Subtask ? '10px 0 10px 5%' : '10px auto'}`, 
+          width: '100%', 
+          margin: '10px auto', 
           borderLeft: `${
             Task_Status === "Open - To Do" ? "4px solid #98d681" 
             : Task_Status === "Analysis" ? "4px solid #f6c1ff" 
@@ -232,6 +232,12 @@ const CustomCard = ({ singleData, handleTaskDelete, handleEditTask, projects, lo
                   </Typography>
                 </Box>
               </Box>
+
+              {/* {
+                <Box>
+                  {Is_Subtask ? <Chip label={"Sub"} /> : ""}
+                </Box>
+              } */}
 
               <Box
                 sx={{

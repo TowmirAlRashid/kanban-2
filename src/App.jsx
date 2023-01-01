@@ -158,7 +158,7 @@ const [loading, setLoading] = useState(false) // loading button state
               Task_List_ID: taskListId,
               Task_ID: taskId,
               Assign_To: ["null"],
-              Is_Subtask: recordData.Task_ID !== ""
+              Is_Subtask: recordData.Task_ID !== "" || recordData.Task_ID !== null || recordData.Task_ID !== undefined
             },
           ]);
         } else {
@@ -169,7 +169,7 @@ const [loading, setLoading] = useState(false) // loading button state
               Project_ID: projectId,
               Task_List_ID: taskListId,
               Task_ID: taskId,
-              Is_Subtask: recordData.Task_ID !== ""
+              Is_Subtask: recordData.Task_ID !== "" || recordData.Task_ID !== null || recordData.Task_ID !== undefined
             },
           ]);
         }
