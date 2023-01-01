@@ -87,6 +87,7 @@ const CustomColumn = ({
                         setLoading={setLoading}
                         cardsData={cardsData}
                         setCardsData={setCardsData}
+                        handleAddTaskSubmit={handleAddTaskSubmit}
                     />
                 ))
         }

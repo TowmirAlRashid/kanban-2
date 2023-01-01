@@ -25,14 +25,6 @@ const data = [
     },
     {
         id: 4,
-        columnTitle: "Baz Destiny",
-        backgroundColor: "#dae0f7",
-        borderTopColor: "#9ba7d6",
-        otherBorders: "#c5cce7",
-        status: "Baz Destiny"
-    },
-    {
-        id: 5,
         columnTitle: "Hoang Tran Pham",
         backgroundColor: "#f7daef",
         borderTopColor: "#d095c0",
@@ -40,12 +32,20 @@ const data = [
         status: "Hoang Tran Pham"
     },
     {
-        id: 6,
+        id: 5,
         columnTitle: "Maddie Hassan",
         backgroundColor: "#daf5f7",
         borderTopColor: "#99d1d3",
         otherBorders: "#cfe9ea",
         status: "Maddie Hassan"
+    },
+    {
+        id: 6,
+        columnTitle: "Rahul Sikdar",
+        backgroundColor: "#dae0f7",
+        borderTopColor: "#9ba7d6",
+        otherBorders: "#c5cce7",
+        status: "Rahul Sikdar"
     },
     {
         id: 7,
@@ -65,6 +65,14 @@ const data = [
     },
     {
         id: 9,
+        columnTitle: "Baz Destiny",
+        backgroundColor: "#dae0f7",
+        borderTopColor: "#9ba7d6",
+        otherBorders: "#c5cce7",
+        status: "Baz Destiny"
+    },
+    {
+        id: 10,
         columnTitle: "Rowel Sabas",
         backgroundColor: "#e7daf7",
         borderTopColor: "#ad93cd",

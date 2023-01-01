@@ -52,7 +52,7 @@ const [loading, setLoading] = useState(false) // loading button state
       let req_data = {
         parameters: {
           select_query:
-            "select Account_Manager, Assign_To, Billable, Billable_log_in_Minutes, Due_Date, Project_ID, Project_Name, Task_ID, Task_List_ID, Task_Status, Name from ZP_Tasks where ((Task_Status != 'Closed' and Task_Status != 'Backlog') and Name not in ('Creds', 'Cred', 'Creds') )",
+            "select Account_Manager, Assign_To, Billable, Billable_log_in_Minutes, Due_Date, Project_ID, Project_Name, Task_ID, Task_List_ID, Task_Status, Name, Is_Subtask from ZP_Tasks where ((Task_Status != 'Closed' and Task_Status != 'Backlog') and Name not in ('Creds', 'Cred', 'Creds') )",
         },
         method: "POST",
         url: "https://www.zohoapis.com/crm/v3/coql",
@@ -94,7 +94,7 @@ const [loading, setLoading] = useState(false) // loading button state
       ...rest,
     };
 
-    console.log(recordData)
+    // console.log(recordData)
 
     // Send data to Standalone Function
     // Billable_log_in_Minutes
@@ -109,6 +109,7 @@ const [loading, setLoading] = useState(false) // loading button state
           Due_Date: data.Due_Date,
           Task_Status: data.Task_Status,
           Billable: data.Billable,
+          Parent_Task_ID: data.Task_ID
         }),
       };
     } else {
@@ -121,9 +122,12 @@ const [loading, setLoading] = useState(false) // loading button state
           Due_Date: data.Due_Date,
           Task_Status: data.Task_Status,
           Billable: data.Billable,
+          Parent_Task_ID: data.Task_ID
         }),
       };
     }
+
+    console.log(req_data)
 
     try {
       const crmStandaloneResp = await ZOHO.CRM.FUNCTIONS.execute(
@@ -153,7 +157,8 @@ const [loading, setLoading] = useState(false) // loading button state
               Project_ID: projectId,
               Task_List_ID: taskListId,
               Task_ID: taskId,
-              Assign_To: ["null"]
+              Assign_To: ["null"],
+              Is_Subtask: recordData.Task_ID !== ""
             },
           ]);
         } else {
@@ -163,7 +168,8 @@ const [loading, setLoading] = useState(false) // loading button state
               ...recordData,
               Project_ID: projectId,
               Task_List_ID: taskListId,
-              Task_ID: taskId
+              Task_ID: taskId,
+              Is_Subtask: recordData.Task_ID !== ""
             },
           ]);
         }
@@ -269,6 +275,7 @@ const [loading, setLoading] = useState(false) // loading button state
                     ...recordData,
                     Project_ID: projectId,
                     Task_List_ID: taskListId,
+                    Is_Subtask: recordData.Is_Subtask 
                   };
                 }
                 return card;
@@ -293,6 +300,7 @@ const [loading, setLoading] = useState(false) // loading button state
                     ...recordData,
                     Project_ID: projectId,
                     Task_List_ID: taskListId,
+                    Is_Subtask: recordData.Is_Subtask 
                   };
                 }
                 return card;

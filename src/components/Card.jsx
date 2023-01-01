@@ -8,15 +8,18 @@ import EventNoteIcon from '@mui/icons-material/EventNote';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useState } from 'react';
 
 import DeleteTask from "./DeleteTask"
 import UpdateTask from "./UpdateTask"
+import AddSubtask from './AddSubtask';
 
-const CustomCard = ({ singleData, handleTaskDelete, handleEditTask, projects, loading, setLoading }) => {
+const CustomCard = ({ singleData, handleTaskDelete, handleEditTask, projects, loading, setLoading, name, handleAddTaskSubmit }) => {
   // console.log(singleData)
-  const { Project_Name, Account_Manager, Name, Task_Status, Billable_log_in_Minutes, Due_Date, Billable, id, Project_ID, Task_ID, Task_List_ID } = singleData;
+  const { Project_Name, Account_Manager, Name, Task_Status, Billable_log_in_Minutes, Due_Date, Billable, id, Project_ID, Task_ID, Task_List_ID, Is_Subtask } = singleData;
 
+  // console.log(Project_Name)
   const [hover, setHover] = useState(false)
 
   const handleMouseOver = () => {
@@ -72,12 +75,24 @@ const CustomCard = ({ singleData, handleTaskDelete, handleEditTask, projects, lo
     return givenDate > today;
   }
 
+
+  // add subtask
+  const [openSubtaskModal, setOpenSubtaskModal] = useState(false)
+
+  const handleSubtaskOpen = () => {
+    setOpenSubtaskModal(true)
+  }
+
+  const handleSubtaskClose = () => {
+    setOpenSubtaskModal(false)
+  }
+
   return (
     <>
       <Card 
         sx={{ 
-          width: '100%', 
-          margin: '10px auto', 
+          width: `${Is_Subtask ? '95%' : '100%'}`, 
+          margin: `${Is_Subtask ? '10px 0 10px 5%' : '10px auto'}`, 
           borderLeft: `${
             Task_Status === "Open - To Do" ? "4px solid #98d681" 
             : Task_Status === "Analysis" ? "4px solid #f6c1ff" 
@@ -270,7 +285,7 @@ const CustomCard = ({ singleData, handleTaskDelete, handleEditTask, projects, lo
                   flexDirection: "row",
                   justifyContent: "flex-start",
                   alignItems: "flex-start",
-                  gap: "1rem"
+                  gap: "0.5rem"
                 }}
               >
                 <Chip 
@@ -334,27 +349,37 @@ const CustomCard = ({ singleData, handleTaskDelete, handleEditTask, projects, lo
                   flexDirection: "row",
                   justifyContent: "flex-end",
                   alignItems: "flex-end",
-                  gap: "0.5rem",
+                  gap: "0.3rem",
                 }}
               >
                 <Box>
                   <IconButton
                     sx={{
-                      padding: "4px"
+                      padding: "2px"
                     }}
-                    onClick={handleClickEditOpen}
+                    onClick={handleSubtaskOpen}
                   >
-                    <EditIcon sx={{ color: "rgba(0, 0, 0, 0.54)" }} />
+                    <AddCircleOutlineIcon fontSize='small' sx={{ color: "rgba(0, 0, 0, 0.54)" }} />
                   </IconButton>
                 </Box>
                 <Box>
                   <IconButton
                     sx={{
-                      padding: "4px"
+                      padding: "2px"
+                    }}
+                    onClick={handleClickEditOpen}
+                  >
+                    <EditIcon fontSize='small' sx={{ color: "rgba(0, 0, 0, 0.54)" }} />
+                  </IconButton>
+                </Box>
+                <Box>
+                  <IconButton
+                    sx={{
+                      padding: "2px"
                     }}
                     onClick={handleClickOpen}
                   >
-                    <DeleteIcon sx={{ color: "rgba(0, 0, 0, 0.54)" }} />
+                    <DeleteIcon fontSize='small' sx={{ color: "rgba(0, 0, 0, 0.54)" }} />
                   </IconButton>
                 </Box>
               </Box>
@@ -383,6 +408,18 @@ const CustomCard = ({ singleData, handleTaskDelete, handleEditTask, projects, lo
         singleData={singleData}
         loading={loading} 
         setLoading={setLoading}
+      />
+
+      <AddSubtask
+        open={openSubtaskModal}
+        handleClose={handleSubtaskClose}
+        taskName={Name}
+        name={name}
+        Project_Name={Project_Name}
+        Project_ID={Project_ID}
+        Account_Manager={Account_Manager}
+        Task_ID={Task_ID}
+        handleAddTaskSubmit={handleAddTaskSubmit}
       />
     </>
   );
