@@ -79,6 +79,14 @@ const data = [
         otherBorders: "#d8c9eb",
         status: "Rowel Sabas"
     },
+    {
+        id: 11,
+        columnTitle: "Fay R",
+        backgroundColor: "#f7edda",
+        borderTopColor: "#d2bc93",
+        otherBorders: "#e9deca",
+        status: "Fay R"
+    }
 ]
 
 export default data;

@@ -69,7 +69,7 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
       "Name": `${data.Name}`,
       // "Description": `${data.Description}`,
       "Assign_To": data.Assign_To,
-      "Project_Name": data.Project_Name,
+      "Project_Name": singleData.Project_Name,
       "Account_Manager": `${data.Account_Manager}`,
       "Due_Date": `${customDate(data.Due_Date)}`,
       "Task_Status": `${data.Task_Status}`,
