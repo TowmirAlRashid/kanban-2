@@ -14,9 +14,14 @@ import { useState, useEffect } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
 import AddIcon from '@mui/icons-material/Add';
 
+import FileInput from './FileInput';
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+
+
+
 
 export default function AlertDialogSlide({ open, handleClose, name, handleAddTaskSubmit, projects, loading }) {
   // console.log({projects})
@@ -24,21 +29,8 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
   const { control, handleSubmit, reset, formState: { errors } } = useForm();
 
   const [selected, setSelected] = useState([name])
-  
 
-  const getProjects = (arrayOfProjects) => {
-    const arrayOfProjectNames = arrayOfProjects.filter(singleData => singleData.Project_ID !== null).map(singleData => {
-      return {
-        Project_Name: singleData.Project_Name,
-        Project_ID: singleData.Project_ID
-      }
-    })
-    const uniqueArrayOfProjectNames = Array.from(new Set(arrayOfProjectNames.map(project => project.Project_ID)))
-    .map(id => {
-      return arrayOfProjectNames.find(project => project.Project_ID === id)
-    })
-    return uniqueArrayOfProjectNames;
-  }
+  const [attachments, setAttachments] = useState([])
 
   const accountManagers = ["Maddie Hassan", "Hoang Tran Pham", "Michael Yana", "Baz Destiny"]
 
@@ -56,10 +48,6 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
     return `${year}-${month + 1}-${day < 10 ? `0${day}` : day}`;
   }
 
-  // const handleChange = (value) => {
-  //   setSelected(value)
-  // }
-
   useEffect(() => {
     reset({
       "Assign_To": [name],
@@ -68,24 +56,24 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
       "Name": "",
       "Task_Status": "",
       "Billable": "",
-      // "Description": ""
     })
-  }, []);
+    setAttachments([])
+  }, [open]);
 
- 
+  // console.log(attachments)
 
   const onsubmit = async (data) => {
     // console.log("hi")
     setAddCardLoading(true);
     await handleAddTaskSubmit({
       "Name": `${data.Name}`,
-      // "Description": `${data.Description}`,
       "Assign_To": selected,
       "Project_Name": data.Project_Name,
       "Account_Manager": `${data.Account_Manager}`,
       "Due_Date": `${customDate(data.Due_Date)}`,
       "Task_Status": `${data.Task_Status}`,
       "Billable": `${data.Billable}`,
+      "Attachments": attachments
     })
 
     reset({
@@ -95,8 +83,9 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
       "Name": "",
       "Task_Status": "",
       "Billable": "",
-      // "Description": ""
     })
+
+    setAttachments([])
   
     setAddCardLoading(false);
     handleClose()
@@ -390,39 +379,14 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
               </Box>
             </Box>
 
-            {/* <Controller
-              control={control}
-              name="Description"
-              render={({ field }) => (
-                <>
-                  <FormLabel id='description' sx={{ mb: "10px",color: "black" }}>Add Attachments</FormLabel>
-                  <TextField 
-                    id="description" 
-                    variant="outlined" 
-                    fullWidth
-                    type="file"
-                    {...field}
-                  />
-                </>
-              )}
-            /> */}
-
-            {/* <Controller
-              control={control}
-              name="Description"
-              render={({ field }) => (
-                <>
-                  <FormLabel id='description' sx={{ mb: "10px",color: "black" }}>Task Description</FormLabel>
-                  <TextField 
-                    id="description" 
-                    variant="outlined" 
-                    fullWidth
-                    multiline
-                    {...field}
-                  />
-                </>
-              )}
-            /> */}
+            <Box>
+              <FileInput
+                name="file alt text"
+                label="Upload Attachments"
+                attachments={attachments}
+                setAttachments={setAttachments}
+              />
+            </Box>
 
             <Box
               sx={{
@@ -442,10 +406,11 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                   "Name": "",
                   "Task_Status": "",
                   "Billable": "",
-                  // "Description": ""
                 })
+                setAttachments([])
                 handleClose()
               }} variant="outlined">Cancel</Button>
+
               <LoadingButton 
                 variant='contained' 
                 type='button' 

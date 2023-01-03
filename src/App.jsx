@@ -37,6 +37,8 @@ function App() {
 
 const [loading, setLoading] = useState(false) // loading button state
 
+// const [filesInfo, setFilesInfo] = useState([])
+
   useEffect(() => {
     ZOHO.embeddedApp.on("PageLoad", function (data) {
       setInitialized(true);
@@ -52,7 +54,7 @@ const [loading, setLoading] = useState(false) // loading button state
       let req_data = {
         parameters: {
           select_query:
-            "select Account_Manager, Assign_To, Billable, Billable_log_in_Minutes, Due_Date, Project_ID, Project_Name, Task_ID, Task_List_ID, Task_Status, Name, Is_Subtask from ZP_Tasks where ((Task_Status != 'Closed' and Task_Status != 'Backlog') and Name not in ('Creds', 'Cred', 'Creds') )",
+            "select id, Account_Manager, Assign_To, Billable, Billable_log_in_Minutes, Due_Date, Project_ID, Project_Name, Task_ID, Task_List_ID, Task_Status, Name, Is_Subtask from ZP_Tasks where ((Task_Status != 'Closed' and Task_Status != 'Backlog') and Name not in ('Creds', 'Cred', 'Creds') )",
         },
         method: "POST",
         url: "https://www.zohoapis.com/crm/v3/coql",
@@ -63,7 +65,7 @@ const [loading, setLoading] = useState(false) // loading button state
         setCardsData(
           data?.details?.statusMessage?.data?.filter((singleData) => singleData.Assign_To !== null)
         );
-        console.log(cardsData)
+        console.log("data", cardsData)
       });
 
 
@@ -94,6 +96,35 @@ const [loading, setLoading] = useState(false) // loading button state
       ...rest,
     };
 
+    let filesInfo = []
+
+    if(data.Attachments?.length > 0) {
+      
+
+      for (const attachment of data.Attachments)
+      {
+          var config = {
+            "CONTENT_TYPE": "multipart",
+            "PARTS": [{
+                "headers": {
+                    "Content-Disposition": "file;"
+                },
+                "content": "__FILE__"
+            }],
+            "FILE": {
+                "fileParam": attachment.name,
+                "file": attachment
+            } 
+          }
+
+          const fileResp = await ZOHO.CRM.API.uploadFile(config)
+          console.log("filedata",fileResp?.data?.[0]?.details)
+          filesInfo.push(fileResp?.data?.[0]?.details?.id)
+      }
+    }
+
+    console.log("files", filesInfo)
+
     // console.log(recordData)
 
     // Send data to Standalone Function
@@ -103,13 +134,13 @@ const [loading, setLoading] = useState(false) // loading button state
       var req_data = {
         arguments: JSON.stringify({
           Task_Name: data.Name,
-          // Assign_To: data.Assign_To,
           Project_Name: data.Project_Name,
           Account_Manager: data.Account_Manager,
           Due_Date: data.Due_Date,
           Task_Status: data.Task_Status,
           Billable: data.Billable,
-          Parent_Task_ID: data.Task_ID
+          Parent_Task_ID: data.Task_ID,
+          Attachment_IDs: filesInfo
         }),
       };
     } else {
@@ -122,7 +153,8 @@ const [loading, setLoading] = useState(false) // loading button state
           Due_Date: data.Due_Date,
           Task_Status: data.Task_Status,
           Billable: data.Billable,
-          Parent_Task_ID: data.Task_ID
+          Parent_Task_ID: data.Task_ID,
+          Attachment_IDs: filesInfo
         }),
       };
     }
@@ -146,6 +178,8 @@ const [loading, setLoading] = useState(false) // loading button state
       const projectId = getUrlInArray?.[5]
       const taskListId = getUrlInArray?.[6]
       const taskId = getUrlInArray?.[7]
+
+      
 
       if (tasks[0].name === recordData.Name) {
         if(recordData?.Assign_To?.includes("Tasks Not Assigned")){
@@ -190,6 +224,36 @@ const [loading, setLoading] = useState(false) // loading button state
       ...rest,
     };
 
+    let filesInfo = []
+
+    if(data.Attachments?.length > 0) {
+      
+
+      for (const attachment of data.Attachments)
+      {
+          var config = {
+            "CONTENT_TYPE": "multipart",
+            "PARTS": [{
+                "headers": {
+                    "Content-Disposition": "file;"
+                },
+                "content": "__FILE__"
+            }],
+            "FILE": {
+                "fileParam": attachment.name,
+                "file": attachment
+            } 
+          }
+
+          const fileResp = await ZOHO.CRM.API.uploadFile(config)
+          console.log("filedata",fileResp?.data?.[0]?.details)
+          filesInfo.push(fileResp?.data?.[0]?.details?.id)
+      }
+    }
+
+    console.log("files", filesInfo)
+    
+
     // Send data to Standalone Function
     // Billable_log_in_Minutes
     const func_name = "bcrm_zp_widget_integration";
@@ -205,6 +269,7 @@ const [loading, setLoading] = useState(false) // loading button state
             Due_Date: data.Due_Date,
             Task_Status: data.Task_Status,
             Billable: data.Billable,
+            Attachment_IDs: filesInfo
           }),
         };
       } else {
@@ -218,6 +283,7 @@ const [loading, setLoading] = useState(false) // loading button state
             Due_Date: data.Due_Date,
             Task_Status: data.Task_Status,
             Billable: data.Billable,
+            Attachment_IDs: filesInfo
           }),
         };
       }
@@ -232,6 +298,7 @@ const [loading, setLoading] = useState(false) // loading button state
           Due_Date: data.Due_Date,
           Task_Status: data.Task_Status,
           Billable: data.Billable,
+          Attachment_IDs: filesInfo
         }),
       };
     }
@@ -254,7 +321,7 @@ const [loading, setLoading] = useState(false) // loading button state
       const taskListId = getUrlInArray?.[6]
       // console.log("getUrlInArray", getUrlInArray);
 
-      console.log(tasks[0].name, recordData.Name);
+      // console.log(tasks[0].name, recordData.Name);
       if (tasks[0].name === recordData.Name) {
         if(!recordData?.Assign_To?.includes("null")) {
           if(recordData.Task_Status === "Closed"){

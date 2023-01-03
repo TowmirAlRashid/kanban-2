@@ -13,6 +13,8 @@ import dayjs from 'dayjs';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SaveIcon from '@mui/icons-material/Save';
 
+import FileInput from "./FileInput"
+
 import { useState } from 'react';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -22,6 +24,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function AlertDialogSlide({ openTask, handleEditClose, handleEditTask, projects, singleData, loading }) {
   const [updateLoader, setUpdateLoader] = useState(loading)
   const { control, handleSubmit, reset,  formState: { errors } } = useForm(singleData);
+
+  const [attachments, setAttachments] = useState([])
 
   const getProjects = (arrayOfProjects) => {
     const arrayOfProjectNames = arrayOfProjects.filter(singleData => singleData.Project_ID !== null).map(singleData => {
@@ -54,7 +58,7 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
   }
 
 
-// console.log({errors}, getValues(), singleData)
+// console.log("attach", attachments)
 
   const onsubmit = async (data) => {
     setUpdateLoader(true)
@@ -70,8 +74,10 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
       "Due_Date": `${customDate(data.Due_Date)}`,
       "Task_Status": `${data.Task_Status}`,
       "Billable": `${data.Billable}`,
-      "Is_Subtask": singleData.Is_Subtask
+      "Is_Subtask": singleData.Is_Subtask,
+      "Attachments": attachments
     })
+    setAttachments([])
 
     setUpdateLoader(false)
     handleEditClose()
@@ -387,6 +393,15 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
               </Box>
             </Box>
 
+            <Box>
+              <FileInput
+                name="file alt text"
+                label="Upload Attachments"
+                attachments={attachments}
+                setAttachments={setAttachments}
+              />
+            </Box>
+
             {/* <Controller     // task description
               control={control}
               name="Description"
@@ -418,13 +433,13 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
               <Button onClick={() => {
                 reset({
                   "Assign_To": singleData.Assign_To,
-                  "Project_Name": null,
-                  "Account_Manager": "",
-                  "Name": "",
-                  "Task_Status": "",
-                  "Billable": "",
-                  // "Description": ""
+                  "Project_Name": singleData.Project_Name,
+                  "Account_Manager": singleData.Account_Manager,
+                  "Name": singleData.Name,
+                  "Task_Status": singleData.Task_Status,
+                  "Billable": singleData.Billable,
                 })
+                setAttachments([])
                 handleEditClose()}} variant="outlined">Cancel</Button>
               <LoadingButton
                 variant='contained' 

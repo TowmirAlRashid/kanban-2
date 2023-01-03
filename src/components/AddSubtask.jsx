@@ -14,6 +14,8 @@ import { useState, useEffect } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
 import AddIcon from '@mui/icons-material/Add';
 
+import FileInput from './FileInput';
+
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -33,6 +35,8 @@ export default function AlertDialogSlide({
   // console.log({projects})
   const [addCardLoading, setAddCardLoading] = useState(loading);
   const { control, handleSubmit, reset, formState: { errors } } = useForm();
+
+  const [attachments, setAttachments] = useState([])
 
   const taskStatus = ["Open - To Do", "Analysis", "In Progress - Waiting for Developer", "Waiting on Client", "QA", "UAT", "Closed", "Backlog"]
 
@@ -55,7 +59,8 @@ export default function AlertDialogSlide({
       "Task_Status": "",
       "Billable": "",
     })
-  }, []);
+    setAttachments([])
+  }, [open]);
 
  
 
@@ -69,7 +74,8 @@ export default function AlertDialogSlide({
       "Due_Date": `${customDate(data.Due_Date)}`,
       "Task_Status": `${data.Task_Status}`,
       "Billable": `${data.Billable}`,
-      "Task_ID": Task_ID
+      "Task_ID": Task_ID,
+      "Attachments": attachments
     })
 
     reset({
@@ -78,21 +84,11 @@ export default function AlertDialogSlide({
       "Task_Status": "",
       "Billable": "",
     })
+
+    setAttachments([])
   
     setAddCardLoading(false);
     handleClose()
-    // console.log(
-    //   {
-    //     "Name": `${data.Name}`,
-    //     "Assign_To": data.Assign_To,
-    //     "Project_Name": {Project_Name, Project_ID},
-    //     "Account_Manager": Account_Manager,
-    //     "Due_Date": `${customDate(data.Due_Date)}`,
-    //     "Task_Status": `${data.Task_Status}`,
-    //     "Billable": `${data.Billable}`,
-    //     "Task_ID": Task_ID
-    //   }
-    // )
   }
 
   return (
@@ -369,6 +365,15 @@ export default function AlertDialogSlide({
               </Box>
             </Box>
 
+            <Box>
+              <FileInput
+                name="file alt text"
+                label="Upload Attachments"
+                attachments={attachments}
+                setAttachments={setAttachments}
+              />
+            </Box>
+
             {/* <Controller
               control={control}
               name="Description"
@@ -406,6 +411,7 @@ export default function AlertDialogSlide({
                   "Billable": "",
                   // "Description": ""
                 })
+                setAttachments([])
                 handleClose()
               }} variant="outlined">Cancel</Button>
               <LoadingButton 

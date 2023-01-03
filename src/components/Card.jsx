@@ -17,7 +17,7 @@ import AddSubtask from './AddSubtask';
 
 const CustomCard = ({ singleData, handleTaskDelete, handleEditTask, projects, loading, setLoading, name, handleAddTaskSubmit }) => {
   // console.log(singleData)
-  const { Project_Name, Account_Manager, Name, Task_Status, Billable_log_in_Minutes, Due_Date, Billable, id, Project_ID, Task_ID, Task_List_ID, Is_Subtask } = singleData;
+  const { Project_Name, Account_Manager, Name, Task_Status, Billable_log_in_Minutes, Due_Date, Billable, id, Project_ID, Task_ID, Task_List_ID } = singleData;
 
   // console.log(Project_Name)
   const [hover, setHover] = useState(false)
@@ -232,12 +232,6 @@ const CustomCard = ({ singleData, handleTaskDelete, handleEditTask, projects, lo
                   </Typography>
                 </Box>
               </Box>
-
-              {/* {
-                <Box>
-                  {Is_Subtask ? <Chip label={"Sub"} /> : ""}
-                </Box>
-              } */}
 
               <Box
                 sx={{
