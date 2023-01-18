@@ -14,12 +14,16 @@ import { useState } from 'react';
 import DeleteTask from "./DeleteTask"
 import UpdateTask from "./UpdateTask"
 import AddSubtask from './AddSubtask';
+import { useEffect } from 'react';
 
-const CustomCard = ({ singleData, handleTaskDelete, handleEditTask, projects, loading, setLoading, name, handleAddTaskSubmit }) => {
+const CustomCard = ({ singleData, handleTaskDelete, handleEditTask, projects, loading, setLoading, name, handleAddTaskSubmit, kanbanLoading, setKanbanLoading }) => {
   // console.log(singleData)
   const { Project_Name, Account_Manager, Name, Task_Status, Billable_log_in_Minutes, Due_Date, Billable, id, Project_ID, Task_ID, Task_List_ID } = singleData;
 
   // console.log(Project_Name)
+  // useEffect(() => {
+  //   setKanbanLoading(false)
+  // }, [])
   const [hover, setHover] = useState(false)
 
   const handleMouseOver = () => {

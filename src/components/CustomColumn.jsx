@@ -39,6 +39,8 @@ const CustomColumn = ({
     // })
     // console.log({filteredCardData})
 
+    const order = ["High", "Medium", "Low", "None", null]
+
   return (
     <Box
         sx={{
@@ -61,6 +63,7 @@ const CustomColumn = ({
               
         {
                 cardsData?.filter((singleData) => singleData?.Assign_To?.includes(status))
+                .sort((card1, card2) => order.indexOf(card1.Priority) - order.indexOf(card2.Priority))
                 .filter(singleData => {
                     if(filterProjects.length > 0){
                         return filterProjects?.includes(singleData?.Project_Name)

@@ -25,6 +25,8 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 function App() {
   const [initialized, setInitialized] = useState(false); //initializing widget
 
+  const [kanbanLoading, setKanbanLoading] = useState(false)
+
   const [cardsData, setCardsData] = useState([]);
 
   const [projects, setProjects] = useState([]);
@@ -49,12 +51,13 @@ const [loading, setLoading] = useState(false) // loading button state
 
   useEffect(() => {
     if (initialized) {
+      setKanbanLoading(true)
 
       const conn_name = "zoho_crm_conn";
       let req_data = {
         parameters: {
           select_query:
-            "select id, Account_Manager, Assign_To, Billable, Billable_log_in_Minutes, Due_Date, Project_ID, Project_Name, Task_ID, Task_List_ID, Task_Status, Name, Is_Subtask from ZP_Tasks where ((Task_Status != 'Closed' and Task_Status != 'Backlog') and Name not in ('Creds', 'Cred', 'Creds') )",
+            "select id, Account_Manager, Assign_To, Billable, Billable_log_in_Minutes, Due_Date, Project_ID, Project_Name, Task_ID, Task_List_ID, Task_Status, Name, Is_Subtask, Priority from ZP_Tasks where ((Task_Status != 'Closed' and Task_Status != 'Backlog') and Name not in ('Creds', 'Cred', 'Creds') )",
         },
         method: "POST",
         url: "https://www.zohoapis.com/crm/v3/coql",
@@ -65,7 +68,6 @@ const [loading, setLoading] = useState(false) // loading button state
         setCardsData(
           data?.details?.statusMessage?.data?.filter((singleData) => singleData.Assign_To !== null)
         );
-        console.log("data", cardsData)
       });
 
 
@@ -86,6 +88,7 @@ const [loading, setLoading] = useState(false) // loading button state
         );
       });
     }
+    // setKanbanLoading(false)
   }, [initialized]);
 
 
@@ -428,7 +431,7 @@ const [loading, setLoading] = useState(false) // loading button state
 
   const statusOptions = ["Open - To Do", "Analysis", "In Progress - Waiting for Developer", "Waiting on Client", "QA", "UAT"]
 
-
+  // console.log("data", cardsData)
 
   return (
     <div>
@@ -638,6 +641,8 @@ const [loading, setLoading] = useState(false) // loading button state
               loading={loading} 
               setLoading={setLoading}
               filterStatus={filterStatus}
+              kanbanLoading={kanbanLoading}
+              setKanbanLoading={setKanbanLoading}
             />
 
             {

@@ -20,8 +20,12 @@ const NotAssignedColumn = ({
     loading, 
     setLoading,
     setCardsData,
-    filterStatus
+    filterStatus,
+    kanbanLoading,
+    setKanbanLoading
 }) => {
+
+    const order = ["High", "Medium", "Low", "None", null]
 
   return (
     <Box
@@ -44,7 +48,10 @@ const NotAssignedColumn = ({
         />
               
         {
+                
+
                 cardsData?.filter((singleData) => singleData?.Assign_To?.includes("null"))
+                .sort((card1, card2) => order.indexOf(card1.Priority) - order.indexOf(card2.Priority))
                 .filter(singleData => {
                     if(filterProjects.length > 0){
                         return filterProjects?.includes(singleData?.Project_Name)
@@ -71,6 +78,8 @@ const NotAssignedColumn = ({
                         setLoading={setLoading}
                         cardsData={cardsData}
                         setCardsData={setCardsData}
+                        setKanbanLoading={setKanbanLoading}
+                        kanbanLoading={kanbanLoading}
                     />
                 ))
         }
