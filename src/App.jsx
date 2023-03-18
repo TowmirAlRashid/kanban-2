@@ -419,6 +419,7 @@ function App() {
         id: id,
       }),
     };
+    console.log({ deleteData: req_data });
     try {
       const crmStandaloneDeleteResp = await ZOHO.CRM.FUNCTIONS.execute(
         func_name,
