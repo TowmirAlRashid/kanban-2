@@ -25,7 +25,7 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 function App() {
   const [initialized, setInitialized] = useState(false); //initializing widget
 
-  const [kanbanLoading, setKanbanLoading] = useState(false)
+  const [kanbanLoading, setKanbanLoading] = useState(false);
 
   const [cardsData, setCardsData] = useState([]);
 
@@ -34,12 +34,12 @@ function App() {
   const [expand, setExpand] = useState(false);
 
   const [filterProjects, setFilterProjects] = useState([]);
-  const [filterPersons, setFilterPersons] = useState([ ]);
-  const [filterStatus, setFilterStatus] = useState([])
+  const [filterPersons, setFilterPersons] = useState([]);
+  const [filterStatus, setFilterStatus] = useState([]);
 
-const [loading, setLoading] = useState(false) // loading button state
+  const [loading, setLoading] = useState(false); // loading button state
 
-// const [filesInfo, setFilesInfo] = useState([])
+  // const [filesInfo, setFilesInfo] = useState([])
 
   useEffect(() => {
     ZOHO.embeddedApp.on("PageLoad", function (data) {
@@ -51,7 +51,18 @@ const [loading, setLoading] = useState(false) // loading button state
 
   useEffect(() => {
     if (initialized) {
-      setKanbanLoading(true)
+      setKanbanLoading(true);
+
+      ZOHO.CRM.CONFIG.getCurrentUser().then(function (data) {
+        console.log("current_user", data?.users?.[0]?.email);
+        if (data?.users?.[0]?.email === "emranul@boostedcrm.com") {
+          setFilterStatus([
+            "Open - To Do",
+            "Analysis",
+            "In Progress - Waiting for Developer",
+          ]);
+        }
+      });
 
       const conn_name = "zoho_crm_conn";
       let req_data = {
@@ -64,33 +75,36 @@ const [loading, setLoading] = useState(false) // loading button state
         param_type: 2,
       };
       ZOHO.CRM.CONNECTION.invoke(conn_name, req_data).then(function (data) {
-        console.log({data})
+        console.log({ data });
         setCardsData(
-          data?.details?.statusMessage?.data?.filter((singleData) => singleData.Assign_To !== null)
+          data?.details?.statusMessage?.data?.filter(
+            (singleData) => singleData.Assign_To !== null
+          )
         );
       });
-
 
       const projects_conn_name = "zoho_project_conn";
       let req_data_for_projects = {
         method: "GET",
         url: "https://projectsapi.zoho.com/restapi/portal/boostedcrm/projects/",
       };
-      ZOHO.CRM.CONNECTION.invoke(projects_conn_name, req_data_for_projects).then(function (data) {
-        console.log(data)
+      ZOHO.CRM.CONNECTION.invoke(
+        projects_conn_name,
+        req_data_for_projects
+      ).then(function (data) {
+        console.log(data);
         setProjects(
           data?.details?.statusMessage?.projects?.map((singleData) => {
             return {
               Project_Name: singleData.name,
-              Project_ID: singleData.id_string
-            }
+              Project_ID: singleData.id_string,
+            };
           })
         );
       });
     }
     // setKanbanLoading(false)
   }, [initialized]);
-
 
   const handleAddTaskSubmit = async (data) => {
     const { Project_Name, ...rest } = data;
@@ -99,41 +113,40 @@ const [loading, setLoading] = useState(false) // loading button state
       ...rest,
     };
 
-    let filesInfo = []
+    let filesInfo = [];
 
-    if(data.Attachments?.length > 0) {
-      
+    if (data.Attachments?.length > 0) {
+      for (const attachment of data.Attachments) {
+        var config = {
+          CONTENT_TYPE: "multipart",
+          PARTS: [
+            {
+              headers: {
+                "Content-Disposition": "file;",
+              },
+              content: "__FILE__",
+            },
+          ],
+          FILE: {
+            fileParam: attachment.name,
+            file: attachment,
+          },
+        };
 
-      for (const attachment of data.Attachments)
-      {
-          var config = {
-            "CONTENT_TYPE": "multipart",
-            "PARTS": [{
-                "headers": {
-                    "Content-Disposition": "file;"
-                },
-                "content": "__FILE__"
-            }],
-            "FILE": {
-                "fileParam": attachment.name,
-                "file": attachment
-            } 
-          }
-
-          const fileResp = await ZOHO.CRM.API.uploadFile(config)
-          console.log("filedata",fileResp?.data?.[0]?.details)
-          filesInfo.push(fileResp?.data?.[0]?.details?.id)
+        const fileResp = await ZOHO.CRM.API.uploadFile(config);
+        console.log("filedata", fileResp?.data?.[0]?.details);
+        filesInfo.push(fileResp?.data?.[0]?.details?.id);
       }
     }
 
-    console.log("files", filesInfo)
+    console.log("files", filesInfo);
 
     // console.log(recordData)
 
     // Send data to Standalone Function
     // Billable_log_in_Minutes
     const func_name = "bcrm_zp_widget_integration";
-    if(data?.Assign_To.includes("Tasks Not Assigned")){
+    if (data?.Assign_To.includes("Tasks Not Assigned")) {
       var req_data = {
         arguments: JSON.stringify({
           Task_Name: data.Name,
@@ -143,7 +156,7 @@ const [loading, setLoading] = useState(false) // loading button state
           Task_Status: data.Task_Status,
           Billable: data.Billable,
           Parent_Task_ID: data.Task_ID,
-          Attachment_IDs: filesInfo
+          Attachment_IDs: filesInfo,
         }),
       };
     } else {
@@ -157,12 +170,12 @@ const [loading, setLoading] = useState(false) // loading button state
           Task_Status: data.Task_Status,
           Billable: data.Billable,
           Parent_Task_ID: data.Task_ID,
-          Attachment_IDs: filesInfo
+          Attachment_IDs: filesInfo,
         }),
       };
     }
 
-    console.log(req_data)
+    console.log(req_data);
 
     try {
       const crmStandaloneResp = await ZOHO.CRM.FUNCTIONS.execute(
@@ -177,15 +190,13 @@ const [loading, setLoading] = useState(false) // loading button state
       }
       const { tasks } = data;
 
-      const getUrlInArray = tasks[0]?.link?.web?.url.split("/");  // gets the url in splitted array from the standalone response
-      const projectId = getUrlInArray?.[5]
-      const taskListId = getUrlInArray?.[6]
-      const taskId = getUrlInArray?.[7]
-
-      
+      const getUrlInArray = tasks[0]?.link?.web?.url.split("/"); // gets the url in splitted array from the standalone response
+      const projectId = getUrlInArray?.[5];
+      const taskListId = getUrlInArray?.[6];
+      const taskId = getUrlInArray?.[7];
 
       if (tasks[0].name === recordData.Name) {
-        if(recordData?.Assign_To?.includes("Tasks Not Assigned")){
+        if (recordData?.Assign_To?.includes("Tasks Not Assigned")) {
           // console.log(recordData?.Assign_To?.includes("Tasks Not Assigned"), "tasks not assigned")
           setCardsData([
             ...cardsData,
@@ -195,7 +206,10 @@ const [loading, setLoading] = useState(false) // loading button state
               Task_List_ID: taskListId,
               Task_ID: taskId,
               Assign_To: ["null"],
-              Is_Subtask: recordData.Task_ID !== "" || recordData.Task_ID !== null || recordData.Task_ID !== undefined
+              Is_Subtask:
+                recordData.Task_ID !== "" ||
+                recordData.Task_ID !== null ||
+                recordData.Task_ID !== undefined,
             },
           ]);
         } else {
@@ -206,12 +220,15 @@ const [loading, setLoading] = useState(false) // loading button state
               Project_ID: projectId,
               Task_List_ID: taskListId,
               Task_ID: taskId,
-              Is_Subtask: recordData.Task_ID !== "" || recordData.Task_ID !== null || recordData.Task_ID !== undefined
+              Is_Subtask:
+                recordData.Task_ID !== "" ||
+                recordData.Task_ID !== null ||
+                recordData.Task_ID !== undefined,
             },
           ]);
         }
 
-        setLoading(false)
+        setLoading(false);
       }
       console.log({ crmStandaloneResp });
     } catch (error) {
@@ -227,41 +244,39 @@ const [loading, setLoading] = useState(false) // loading button state
       ...rest,
     };
 
-    let filesInfo = []
+    let filesInfo = [];
 
-    if(data.Attachments?.length > 0) {
-      
+    if (data.Attachments?.length > 0) {
+      for (const attachment of data.Attachments) {
+        var config = {
+          CONTENT_TYPE: "multipart",
+          PARTS: [
+            {
+              headers: {
+                "Content-Disposition": "file;",
+              },
+              content: "__FILE__",
+            },
+          ],
+          FILE: {
+            fileParam: attachment.name,
+            file: attachment,
+          },
+        };
 
-      for (const attachment of data.Attachments)
-      {
-          var config = {
-            "CONTENT_TYPE": "multipart",
-            "PARTS": [{
-                "headers": {
-                    "Content-Disposition": "file;"
-                },
-                "content": "__FILE__"
-            }],
-            "FILE": {
-                "fileParam": attachment.name,
-                "file": attachment
-            } 
-          }
-
-          const fileResp = await ZOHO.CRM.API.uploadFile(config)
-          console.log("filedata",fileResp?.data?.[0]?.details)
-          filesInfo.push(fileResp?.data?.[0]?.details?.id)
+        const fileResp = await ZOHO.CRM.API.uploadFile(config);
+        console.log("filedata", fileResp?.data?.[0]?.details);
+        filesInfo.push(fileResp?.data?.[0]?.details?.id);
       }
     }
 
-    console.log("files", filesInfo)
-    
+    console.log("files", filesInfo);
 
     // Send data to Standalone Function
     // Billable_log_in_Minutes
     const func_name = "bcrm_zp_widget_integration";
-    if(data?.Assign_To.includes("null")){
-      if(data?.Assign_To.includes("null") && data?.Assign_To.length === 1) {
+    if (data?.Assign_To.includes("null")) {
+      if (data?.Assign_To.includes("null") && data?.Assign_To.length === 1) {
         var req_data = {
           arguments: JSON.stringify({
             Task_Name: data.Name,
@@ -272,7 +287,7 @@ const [loading, setLoading] = useState(false) // loading button state
             Due_Date: data.Due_Date,
             Task_Status: data.Task_Status,
             Billable: data.Billable,
-            Attachment_IDs: filesInfo
+            Attachment_IDs: filesInfo,
           }),
         };
       } else {
@@ -286,7 +301,7 @@ const [loading, setLoading] = useState(false) // loading button state
             Due_Date: data.Due_Date,
             Task_Status: data.Task_Status,
             Billable: data.Billable,
-            Attachment_IDs: filesInfo
+            Attachment_IDs: filesInfo,
           }),
         };
       }
@@ -301,7 +316,7 @@ const [loading, setLoading] = useState(false) // loading button state
           Due_Date: data.Due_Date,
           Task_Status: data.Task_Status,
           Billable: data.Billable,
-          Attachment_IDs: filesInfo
+          Attachment_IDs: filesInfo,
         }),
       };
     }
@@ -319,23 +334,25 @@ const [loading, setLoading] = useState(false) // loading button state
       }
       const { tasks } = data;
 
-      const getUrlInArray = tasks[0]?.link?.web?.url.split("/");  // gets the url in splitted array from the standalone response
-      const projectId = getUrlInArray?.[5]
-      const taskListId = getUrlInArray?.[6]
+      const getUrlInArray = tasks[0]?.link?.web?.url.split("/"); // gets the url in splitted array from the standalone response
+      const projectId = getUrlInArray?.[5];
+      const taskListId = getUrlInArray?.[6];
       // console.log("getUrlInArray", getUrlInArray);
 
       // console.log(tasks[0].name, recordData.Name);
       if (tasks[0].name === recordData.Name) {
-        if(!recordData?.Assign_To?.includes("null")) {
-          if(recordData.Task_Status === "Closed"){
+        if (!recordData?.Assign_To?.includes("null")) {
+          if (recordData.Task_Status === "Closed") {
             // console.log("index", cardsData.indexOf(recordData.id))
             const targetTask = (task) => {
-              return task.id === recordData.id
-            }
+              return task.id === recordData.id;
+            };
 
             const index = cardsData.indexOf(cardsData.find(targetTask));
-            if(index > -1){
-              setCardsData(cardsData?.filter((card) => card.id !== recordData.id))
+            if (index > -1) {
+              setCardsData(
+                cardsData?.filter((card) => card.id !== recordData.id)
+              );
             }
           } else {
             setCardsData(
@@ -345,7 +362,7 @@ const [loading, setLoading] = useState(false) // loading button state
                     ...recordData,
                     Project_ID: projectId,
                     Task_List_ID: taskListId,
-                    Is_Subtask: recordData.Is_Subtask 
+                    Is_Subtask: recordData.Is_Subtask,
                   };
                 }
                 return card;
@@ -353,14 +370,16 @@ const [loading, setLoading] = useState(false) // loading button state
             );
           }
         } else {
-          if(recordData.Task_Status === "Closed"){
+          if (recordData.Task_Status === "Closed") {
             const targetTask = (task) => {
-              return task.id === recordData.id
-            }
+              return task.id === recordData.id;
+            };
 
             const index = cardsData.indexOf(cardsData.find(targetTask));
-            if(index > -1){
-              setCardsData(cardsData?.filter((card) => card.id !== recordData.id))
+            if (index > -1) {
+              setCardsData(
+                cardsData?.filter((card) => card.id !== recordData.id)
+              );
             }
           } else {
             setCardsData(
@@ -370,7 +389,7 @@ const [loading, setLoading] = useState(false) // loading button state
                     ...recordData,
                     Project_ID: projectId,
                     Task_List_ID: taskListId,
-                    Is_Subtask: recordData.Is_Subtask 
+                    Is_Subtask: recordData.Is_Subtask,
                   };
                 }
                 return card;
@@ -378,8 +397,8 @@ const [loading, setLoading] = useState(false) // loading button state
             );
           }
         }
-        
-        setLoading(false)
+
+        setLoading(false);
       }
 
       console.log({ updateTask, req_data });
@@ -388,14 +407,16 @@ const [loading, setLoading] = useState(false) // loading button state
     }
   };
 
-  const handleTaskDelete = async (deleteData) => {    // delete the targeted task
-    let { Name, projectId, taskId } = deleteData;
+  const handleTaskDelete = async (deleteData) => {
+    // delete the targeted task
+    let { Name, projectId, taskId, id } = deleteData;
 
     const func_name = "bcrm_zp_widget_delete_task";
     var req_data = {
       arguments: JSON.stringify({
         Task_Id: taskId,
         Project_ID: projectId,
+        id: id,
       }),
     };
     try {
@@ -409,14 +430,14 @@ const [loading, setLoading] = useState(false) // loading button state
       if (data?.error) {
         return "";
       }
-      if(data.response === "Task Deleted Successfully"){
+      if (data.response === "Task Deleted Successfully") {
         setCardsData(cardsData?.filter((card) => card.Name !== Name));
-        setLoading(false)
+        setLoading(false);
       }
       // Task Deleted Successfully
       console.log("crmStandaloneDeleteResp", crmStandaloneDeleteResp);
     } catch (error) {
-      console.log({crmStandaloneDeleteResp: error});
+      console.log({ crmStandaloneDeleteResp: error });
     }
   };
 
@@ -429,7 +450,14 @@ const [loading, setLoading] = useState(false) // loading button state
     return uniqueArrayOfProjectNames;
   };
 
-  const statusOptions = ["Open - To Do", "Analysis", "In Progress - Waiting for Developer", "Waiting on Client", "QA", "UAT"]
+  const statusOptions = [
+    "Open - To Do",
+    "Analysis",
+    "In Progress - Waiting for Developer",
+    "Waiting on Client",
+    "QA",
+    "UAT",
+  ];
 
   // console.log("data", cardsData)
 
@@ -449,14 +477,14 @@ const [loading, setLoading] = useState(false) // loading button state
             display: "flex",
             justifyContent: "space-between",
             alignItems: "flex-start",
-            flexDirection: "row"
+            flexDirection: "row",
           }}
         >
           <Typography
             sx={{
               fontSize: "24px",
               fontWeight: "500",
-              ml: "1.5rem"
+              ml: "1.5rem",
             }}
           >
             Boosted CRM Tasks Board
@@ -468,7 +496,7 @@ const [loading, setLoading] = useState(false) // loading button state
               flexDirection: "column",
               justifyContent: "flex-end",
               alignItems: "flex-end",
-              gap: "1rem"
+              gap: "1rem",
             }}
           >
             <Box
@@ -507,7 +535,7 @@ const [loading, setLoading] = useState(false) // loading button state
                   <TextField {...params} label="Filter By Project" />
                 )}
                 onChange={(e, v) => {
-                  setFilterProjects(v)
+                  setFilterProjects(v);
                 }}
               />
 
@@ -516,12 +544,11 @@ const [loading, setLoading] = useState(false) // loading button state
                 multiple
                 id="filterByPerson"
                 value={filterPersons}
-                options={
-                  data?.filter(elem => elem.status !== "Tasks Not Assigned")
-                    .map(elem => {
-                      return elem.status;
-                    })
-                }
+                options={data
+                  ?.filter((elem) => elem.status !== "Tasks Not Assigned")
+                  .map((elem) => {
+                    return elem.status;
+                  })}
                 disableCloseOnSelect
                 limitTags={1}
                 size="small"
@@ -542,7 +569,7 @@ const [loading, setLoading] = useState(false) // loading button state
                   <TextField {...params} label="Filter By Person" />
                 )}
                 onChange={(e, v) => {
-                  setFilterPersons(v)
+                  setFilterPersons(v);
                 }}
               />
 
@@ -571,7 +598,7 @@ const [loading, setLoading] = useState(false) // loading button state
                   <TextField {...params} label="Filter By Status" />
                 )}
                 onChange={(e, v) => {
-                  setFilterStatus(v)
+                  setFilterStatus(v);
                 }}
               />
             </Box>
@@ -582,7 +609,7 @@ const [loading, setLoading] = useState(false) // loading button state
                 flexDirection: "row",
                 justifyContent: "flex-end",
                 alignItems: "flex-end",
-                gap: "1rem"
+                gap: "1rem",
               }}
             >
               <Button
@@ -608,8 +635,13 @@ const [loading, setLoading] = useState(false) // loading button state
           }}
         >
           <Box // div that holds the category modules
-            sx={{ //data.length * 345 + 100
-              width: `calc(${filterPersons.length > 0 ? (filterPersons.length + 1) * 345 + 100 : data.length * 345 + 100}px)`,
+            sx={{
+              //data.length * 345 + 100
+              width: `calc(${
+                filterPersons.length > 0
+                  ? (filterPersons.length + 1) * 345 + 100
+                  : data.length * 345 + 100
+              }px)`,
               height: "100%",
               backgroundColor: "#edf0f4",
               display: "flex",
@@ -625,7 +657,8 @@ const [loading, setLoading] = useState(false) // loading button state
               key={data[0].id}
               columnTitle={data[0].columnTitle}
               numberOfTasks={
-                cardsData?.filter((card) => card?.Assign_To?.includes("null")).length
+                cardsData?.filter((card) => card?.Assign_To?.includes("null"))
+                  .length
               }
               backgroundColor={data[0].backgroundColor}
               borderTopColor={data[0].borderTopColor}
@@ -638,19 +671,19 @@ const [loading, setLoading] = useState(false) // loading button state
               handleTaskDelete={handleTaskDelete}
               handleEditTask={handleEditTask}
               filterProjects={filterProjects}
-              loading={loading} 
+              loading={loading}
               setLoading={setLoading}
               filterStatus={filterStatus}
               kanbanLoading={kanbanLoading}
               setKanbanLoading={setKanbanLoading}
             />
 
-            {
-              data?.filter(column => column.status !== "Tasks Not Assigned")
-              ?.filter(column => {
-                if(filterPersons.length > 0){
-                  console.log(filterPersons)
-                  return filterPersons?.includes(column.columnTitle)
+            {data
+              ?.filter((column) => column.status !== "Tasks Not Assigned")
+              ?.filter((column) => {
+                if (filterPersons.length > 0) {
+                  console.log(filterPersons);
+                  return filterPersons?.includes(column.columnTitle);
                 } else {
                   return column;
                 }
@@ -661,7 +694,9 @@ const [loading, setLoading] = useState(false) // loading button state
                     key={column.id}
                     columnTitle={column.columnTitle}
                     numberOfTasks={
-                      cardsData?.filter((card) => card?.Assign_To?.includes(column.status)).length
+                      cardsData?.filter((card) =>
+                        card?.Assign_To?.includes(column.status)
+                      ).length
                     }
                     backgroundColor={column.backgroundColor}
                     borderTopColor={column.borderTopColor}
@@ -674,13 +709,12 @@ const [loading, setLoading] = useState(false) // loading button state
                     handleTaskDelete={handleTaskDelete}
                     handleEditTask={handleEditTask}
                     filterProjects={filterProjects}
-                    loading={loading} 
+                    loading={loading}
                     setLoading={setLoading}
                     filterStatus={filterStatus}
                   />
                 );
-              })
-            }
+              })}
           </Box>
         </Box>
       </Box>
