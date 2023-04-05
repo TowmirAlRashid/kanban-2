@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   TextField,
   Typography,
 } from "@mui/material";
@@ -469,265 +470,292 @@ function App() {
 
   // console.log("data", cardsData)
 
-  return (
-    <div>
-      <Box // parent div to hold the app
-        sx={{
-          width: "100%",
-          height: "100vh",
-          backgroundColor: "#edf0f4",
-        }}
-      >
-        <Box
+  if (cardsData && projects) {
+    return (
+      <div>
+        <Box // parent div to hold the app
           sx={{
-            width: "99%",
-            pt: "2rem",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            flexDirection: "row",
+            width: "100%",
+            height: "100vh",
+            backgroundColor: "#edf0f4",
           }}
         >
-          <Typography
-            sx={{
-              fontSize: "24px",
-              fontWeight: "500",
-              ml: "1.5rem",
-            }}
-          >
-            Boosted CRM Tasks Board
-          </Typography>
-
           <Box
             sx={{
+              width: "99%",
+              pt: "2rem",
               display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-end",
-              alignItems: "flex-end",
-              gap: "1rem",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+              flexDirection: "row",
             }}
           >
-            <Box
+            <Typography
               sx={{
-                display: `${expand ? "flex" : "none"}`,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: "1rem",
+                fontSize: "24px",
+                fontWeight: "500",
+                ml: "1.5rem",
               }}
             >
-              <Typography>Sort By</Typography>
-
-              {/* filter by projects */}
-              <Autocomplete
-                multiple
-                id="filterByProject"
-                options={getProjectNames(projects)}
-                limitTags={1}
-                size="small"
-                disableCloseOnSelect
-                getOptionLabel={(option) => option}
-                renderOption={(props, option, { selected }) => (
-                  <li {...props}>
-                    <Checkbox
-                      icon={icon}
-                      checkedIcon={checkedIcon}
-                      style={{ marginRight: 8 }}
-                      checked={selected}
-                    />
-                    {option}
-                  </li>
-                )}
-                style={{ width: 300 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Filter By Project" />
-                )}
-                onChange={(e, v) => {
-                  setFilterProjects(v);
-                }}
-              />
-
-              {/* filter by persons */}
-              <Autocomplete
-                multiple
-                id="filterByPerson"
-                value={filterPersons}
-                options={data
-                  ?.filter((elem) => elem.status !== "Tasks Not Assigned")
-                  .map((elem) => {
-                    return elem.status;
-                  })}
-                disableCloseOnSelect
-                limitTags={1}
-                size="small"
-                getOptionLabel={(option) => option}
-                renderOption={(props, option, { selected }) => (
-                  <li {...props}>
-                    <Checkbox
-                      icon={icon}
-                      checkedIcon={checkedIcon}
-                      style={{ marginRight: 8 }}
-                      checked={selected}
-                    />
-                    {option}
-                  </li>
-                )}
-                style={{ width: 300 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Filter By Person" />
-                )}
-                onChange={(e, v) => {
-                  setFilterPersons(v);
-                }}
-              />
-
-              {/* filter by status */}
-              <Autocomplete
-                multiple
-                id="filterByStatus"
-                options={statusOptions}
-                disableCloseOnSelect
-                limitTags={1}
-                size="small"
-                getOptionLabel={(option) => option}
-                renderOption={(props, option, { selected }) => (
-                  <li {...props}>
-                    <Checkbox
-                      icon={icon}
-                      checkedIcon={checkedIcon}
-                      style={{ marginRight: 8 }}
-                      checked={selected}
-                    />
-                    {option}
-                  </li>
-                )}
-                style={{ width: 300 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Filter By Status" />
-                )}
-                onChange={(e, v) => {
-                  setFilterStatus(v);
-                }}
-              />
-            </Box>
+              Boosted CRM Tasks Board
+            </Typography>
 
             <Box
               sx={{
                 display: "flex",
-                flexDirection: "row",
+                flexDirection: "column",
                 justifyContent: "flex-end",
                 alignItems: "flex-end",
                 gap: "1rem",
               }}
             >
-              <Button
-                variant="contained"
-                endIcon={expand ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                onClick={() => setExpand(!expand)}
+              <Box
+                sx={{
+                  display: `${expand ? "flex" : "none"}`,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "1rem",
+                }}
               >
-                Filter Options
-              </Button>
+                <Typography>Sort By</Typography>
+
+                {/* filter by projects */}
+                <Autocomplete
+                  multiple
+                  id="filterByProject"
+                  options={getProjectNames(projects)}
+                  limitTags={1}
+                  size="small"
+                  disableCloseOnSelect
+                  getOptionLabel={(option) => option}
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props}>
+                      <Checkbox
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        style={{ marginRight: 8 }}
+                        checked={selected}
+                      />
+                      {option}
+                    </li>
+                  )}
+                  style={{ width: 300 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Filter By Project" />
+                  )}
+                  onChange={(e, v) => {
+                    setFilterProjects(v);
+                  }}
+                />
+
+                {/* filter by persons */}
+                <Autocomplete
+                  multiple
+                  id="filterByPerson"
+                  value={filterPersons}
+                  options={data
+                    ?.filter((elem) => elem.status !== "Tasks Not Assigned")
+                    .map((elem) => {
+                      return elem.status;
+                    })}
+                  disableCloseOnSelect
+                  limitTags={1}
+                  size="small"
+                  getOptionLabel={(option) => option}
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props}>
+                      <Checkbox
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        style={{ marginRight: 8 }}
+                        checked={selected}
+                      />
+                      {option}
+                    </li>
+                  )}
+                  style={{ width: 300 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Filter By Person" />
+                  )}
+                  onChange={(e, v) => {
+                    setFilterPersons(v);
+                  }}
+                />
+
+                {/* filter by status */}
+                <Autocomplete
+                  multiple
+                  id="filterByStatus"
+                  options={statusOptions}
+                  disableCloseOnSelect
+                  limitTags={1}
+                  size="small"
+                  getOptionLabel={(option) => option}
+                  renderOption={(props, option, { selected }) => (
+                    <li {...props}>
+                      <Checkbox
+                        icon={icon}
+                        checkedIcon={checkedIcon}
+                        style={{ marginRight: 8 }}
+                        checked={selected}
+                      />
+                      {option}
+                    </li>
+                  )}
+                  style={{ width: 300 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Filter By Status" />
+                  )}
+                  onChange={(e, v) => {
+                    setFilterStatus(v);
+                  }}
+                />
+              </Box>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                  alignItems: "flex-end",
+                  gap: "1rem",
+                }}
+              >
+                <Button
+                  variant="contained"
+                  endIcon={expand ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                  onClick={() => setExpand(!expand)}
+                >
+                  Filter Options
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+
+          <Box // div that holds the card modules
+            sx={{
+              width: "auto",
+              overflowX: "auto",
+              ml: "5rem",
+              height: `${expand ? "84vh" : "91vh"}`,
+              margin: "10px auto 0",
+              padding: "20px 20px 0px",
+              backgroundColor: "#edf0f4",
+            }}
+          >
+            <Box // div that holds the category modules
+              sx={{
+                //data.length * 345 + 100
+                width: `calc(${
+                  filterPersons.length > 0
+                    ? (filterPersons.length + 1) * 345 + 100
+                    : data.length * 345 + 100
+                }px)`,
+                height: "100%",
+                backgroundColor: "#edf0f4",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "flex-start",
+                gap: "1rem",
+                // overflowX: "scroll",
+                paddingRight: "2rem",
+                paddingleft: "2rem",
+              }}
+            >
+              <NotAssignedColumn
+                key={data[0].id}
+                columnTitle={data[0].columnTitle}
+                numberOfTasks={
+                  cardsData?.filter((card) => card?.Assign_To?.includes("null"))
+                    .length
+                }
+                backgroundColor={data[0].backgroundColor}
+                borderTopColor={data[0].borderTopColor}
+                otherBorders={data[0].otherBorders}
+                handleAddTaskSubmit={handleAddTaskSubmit}
+                status={data[0].status}
+                cardsData={cardsData}
+                setCardsData={setCardsData}
+                projects={projects}
+                handleTaskDelete={handleTaskDelete}
+                handleEditTask={handleEditTask}
+                filterProjects={filterProjects}
+                loading={loading}
+                setLoading={setLoading}
+                filterStatus={filterStatus}
+                kanbanLoading={kanbanLoading}
+                setKanbanLoading={setKanbanLoading}
+              />
+
+              {data
+                ?.filter((column) => column.status !== "Tasks Not Assigned")
+                ?.filter((column) => {
+                  if (filterPersons.length > 0) {
+                    console.log(filterPersons);
+                    return filterPersons?.includes(column.columnTitle);
+                  } else {
+                    return column;
+                  }
+                })
+                ?.map((column) => {
+                  return (
+                    <CustomColumn
+                      key={column.id}
+                      columnTitle={column.columnTitle}
+                      numberOfTasks={
+                        cardsData?.filter((card) =>
+                          card?.Assign_To?.includes(column.status)
+                        ).length
+                      }
+                      backgroundColor={column.backgroundColor}
+                      borderTopColor={column.borderTopColor}
+                      otherBorders={column.otherBorders}
+                      handleAddTaskSubmit={handleAddTaskSubmit}
+                      status={column.status}
+                      cardsData={cardsData}
+                      setCardsData={setCardsData}
+                      projects={projects}
+                      handleTaskDelete={handleTaskDelete}
+                      handleEditTask={handleEditTask}
+                      filterProjects={filterProjects}
+                      loading={loading}
+                      setLoading={setLoading}
+                      filterStatus={filterStatus}
+                    />
+                  );
+                })}
             </Box>
           </Box>
         </Box>
-
-        <Box // div that holds the card modules
+      </div>
+    );
+  } else {
+    return (
+      <Box
+        sx={{
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <Box
           sx={{
-            width: "auto",
-            overflowX: "auto",
-            ml: "5rem",
-            height: `${expand ? "84vh" : "91vh"}`,
-            margin: "10px auto 0",
-            padding: "20px 20px 0px",
-            backgroundColor: "#edf0f4",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "column",
+            gap: "1rem",
+            margin: "12% 0",
           }}
         >
-          <Box // div that holds the category modules
-            sx={{
-              //data.length * 345 + 100
-              width: `calc(${
-                filterPersons.length > 0
-                  ? (filterPersons.length + 1) * 345 + 100
-                  : data.length * 345 + 100
-              }px)`,
-              height: "100%",
-              backgroundColor: "#edf0f4",
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "flex-start",
-              gap: "1rem",
-              // overflowX: "scroll",
-              paddingRight: "2rem",
-              paddingleft: "2rem",
-            }}
-          >
-            <NotAssignedColumn
-              key={data[0].id}
-              columnTitle={data[0].columnTitle}
-              numberOfTasks={
-                cardsData?.filter((card) => card?.Assign_To?.includes("null"))
-                  .length
-              }
-              backgroundColor={data[0].backgroundColor}
-              borderTopColor={data[0].borderTopColor}
-              otherBorders={data[0].otherBorders}
-              handleAddTaskSubmit={handleAddTaskSubmit}
-              status={data[0].status}
-              cardsData={cardsData}
-              setCardsData={setCardsData}
-              projects={projects}
-              handleTaskDelete={handleTaskDelete}
-              handleEditTask={handleEditTask}
-              filterProjects={filterProjects}
-              loading={loading}
-              setLoading={setLoading}
-              filterStatus={filterStatus}
-              kanbanLoading={kanbanLoading}
-              setKanbanLoading={setKanbanLoading}
-            />
-
-            {data
-              ?.filter((column) => column.status !== "Tasks Not Assigned")
-              ?.filter((column) => {
-                if (filterPersons.length > 0) {
-                  console.log(filterPersons);
-                  return filterPersons?.includes(column.columnTitle);
-                } else {
-                  return column;
-                }
-              })
-              ?.map((column) => {
-                return (
-                  <CustomColumn
-                    key={column.id}
-                    columnTitle={column.columnTitle}
-                    numberOfTasks={
-                      cardsData?.filter((card) =>
-                        card?.Assign_To?.includes(column.status)
-                      ).length
-                    }
-                    backgroundColor={column.backgroundColor}
-                    borderTopColor={column.borderTopColor}
-                    otherBorders={column.otherBorders}
-                    handleAddTaskSubmit={handleAddTaskSubmit}
-                    status={column.status}
-                    cardsData={cardsData}
-                    setCardsData={setCardsData}
-                    projects={projects}
-                    handleTaskDelete={handleTaskDelete}
-                    handleEditTask={handleEditTask}
-                    filterProjects={filterProjects}
-                    loading={loading}
-                    setLoading={setLoading}
-                    filterStatus={filterStatus}
-                  />
-                );
-              })}
-          </Box>
+          <CircularProgress color="inherit" />
+          <Typography fontWeight="bold" fontSize="1.5rem">
+            Fetching Tasks. Please Wait...
+          </Typography>
         </Box>
       </Box>
-    </div>
-  );
+    );
+  }
 }
 
 export default App;
