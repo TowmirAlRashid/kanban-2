@@ -1,53 +1,91 @@
- import * as React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import Slide from '@mui/material/Slide';
-import { Autocomplete, Box, FormLabel, TextField } from '@mui/material';
-import { Controller, useForm } from 'react-hook-form';
+import * as React from "react";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
+import { Autocomplete, Box, FormLabel, TextField } from "@mui/material";
+import { Controller, useForm } from "react-hook-form";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 
-import LoadingButton from '@mui/lab/LoadingButton';
-import SaveIcon from '@mui/icons-material/Save';
+import LoadingButton from "@mui/lab/LoadingButton";
+import SaveIcon from "@mui/icons-material/Save";
 
-import FileInput from "./FileInput"
+import FileInput from "./FileInput";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function AlertDialogSlide({ openTask, handleEditClose, handleEditTask, projects, singleData, loading }) {
-  const [updateLoader, setUpdateLoader] = useState(loading)
-  const { control, handleSubmit, reset,  formState: { errors } } = useForm(singleData);
+export default function UpdateTask({
+  openTask,
+  handleEditClose,
+  handleEditTask,
+  projects,
+  singleData,
+  loading,
+}) {
+  const [updateLoader, setUpdateLoader] = useState(loading);
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm(singleData);
 
-  const [attachments, setAttachments] = useState([])
+  const [attachments, setAttachments] = useState([]);
 
   const getProjects = (arrayOfProjects) => {
-    const arrayOfProjectNames = arrayOfProjects.filter(singleData => singleData.Project_ID !== null).map(singleData => {
-      return {
-        Project_Name: singleData.Project_Name,
-        Project_ID: singleData.Project_ID
-      }
-    })
-    const uniqueArrayOfProjectNames = Array.from(new Set(arrayOfProjectNames.map(project => project.Project_ID)))
-    .map(id => {
-      return arrayOfProjectNames.find(project => project.Project_ID === id)
-    })
+    const arrayOfProjectNames = arrayOfProjects
+      .filter((singleData) => singleData.Project_ID !== null)
+      .map((singleData) => {
+        return {
+          Project_Name: singleData.Project_Name,
+          Project_ID: singleData.Project_ID,
+        };
+      });
+    const uniqueArrayOfProjectNames = Array.from(
+      new Set(arrayOfProjectNames.map((project) => project.Project_ID))
+    ).map((id) => {
+      return arrayOfProjectNames.find((project) => project.Project_ID === id);
+    });
     return uniqueArrayOfProjectNames;
-  }
+  };
 
-  const accountManagers = ["Maddie Hassan", "Hoang Tran Pham", "Michael Yana", "Baz Destiny"]
+  const accountManagers = [
+    "Maddie Hassan",
+    "Hoang Tran Pham",
+    "Michael Yana",
+    "Baz Destiny",
+  ];
 
-  const taskStatus = ["Open - To Do", "Analysis", "In Progress - Waiting for Developer", "Waiting on Client", "QA", "UAT", "Closed", "Backlog"]
+  const taskStatus = [
+    "Open - To Do",
+    "Analysis",
+    "In Progress - Waiting for Developer",
+    "Waiting on Client",
+    "QA",
+    "UAT",
+    "Closed",
+    "Backlog",
+  ];
 
-  const billable = ["Yes", "No"]
+  const billable = ["Yes", "No"];
 
-  const assignedToOptions = ["Baz Destiny", "Ih shawn", "Emranul Hassan", "Hoang Tran Pham", "Maddie Hassan", "Michael Yana", "Boosted CRM", "Rowel Sabas"]
+  const assignedToOptions = [
+    "Baz Destiny",
+    "Ih shawn",
+    "Emranul Hassan",
+    "Hoang Tran Pham",
+    "Maddie Hassan",
+    "Michael Yana",
+    "Boosted CRM",
+    "Rowel Sabas",
+  ];
 
   const customDate = (date) => {
     const dateObj = new Date(date);
@@ -55,36 +93,34 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
     let month = dateObj.getMonth();
     let day = dateObj.getDate();
     return `${year}-${month + 1}-${day < 10 ? `0${day}` : day}`;
-  }
+  };
 
-
-// console.log("attach", attachments)
+  // console.log("attach", attachments)
 
   const onsubmit = async (data) => {
-    setUpdateLoader(true)
-    
+    setUpdateLoader(true);
+
     await handleEditTask({
-      "id": singleData.id,
-      "Task_ID": singleData.Task_ID,
-      "Name": `${data.Name}`,
+      id: singleData.id,
+      Task_ID: singleData.Task_ID,
+      Name: `${data.Name}`,
       // "Description": `${data.Description}`,
-      "Assign_To": data.Assign_To,
-      "Project_Name": singleData.Project_Name,
-      "Account_Manager": `${data.Account_Manager}`,
-      "Due_Date": `${customDate(data.Due_Date)}`,
-      "Task_Status": `${data.Task_Status}`,
-      "Billable": `${data.Billable}`,
-      "Is_Subtask": singleData.Is_Subtask,
-      "Attachments": attachments
-    })
-    setAttachments([])
+      Assign_To: data.Assign_To,
+      Project_Name: singleData.Project_Name,
+      Account_Manager: `${data.Account_Manager}`,
+      Due_Date: `${customDate(data.Due_Date)}`,
+      Task_Status: `${data.Task_Status}`,
+      Billable: `${data.Billable}`,
+      Is_Subtask: singleData.Is_Subtask,
+      Attachments: attachments,
+    });
+    setAttachments([]);
 
-    setUpdateLoader(false)
-    handleEditClose()
-  }
+    setUpdateLoader(false);
+    handleEditClose();
+  };
 
-
-//  console.log({"allValues": getValues(), singleData})
+  //  console.log({"allValues": getValues(), singleData})
   return (
     <div>
       {/* {JSON.stringify(singleData)} */}
@@ -98,31 +134,31 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
         maxWidth="md"
         sx={{
           "& .MuiPaper-root": {
-            padding: "1rem 20px"
-          }
+            padding: "1rem 20px",
+          },
         }}
       >
-        <DialogTitle sx={{ mb: "0.5rem", mt: "1rem" }}>{`Edit This Task?`}</DialogTitle>
+        <DialogTitle
+          sx={{ mb: "0.5rem", mt: "1rem" }}
+        >{`Edit This Task?`}</DialogTitle>
         <DialogContent>
-          <Box 
-            component="form" 
-            onSubmit={handleSubmit(onsubmit)} 
-          >
-            <Box 
-              sx={{ 
-                width: "100%" ,
+          <Box component="form" onSubmit={handleSubmit(onsubmit)}>
+            <Box
+              sx={{
+                width: "100%",
                 display: "flex",
                 flexDirection: "column",
                 mb: "1rem",
-
               }}
             >
-              <FormLabel id='assignTo' sx={{ mb: "10px", color: "black" }}>Assign To?</FormLabel>
+              <FormLabel id="assignTo" sx={{ mb: "10px", color: "black" }}>
+                Assign To?
+              </FormLabel>
               <Controller
                 name="Assign_To"
                 control={control}
                 defaultValue={singleData?.Assign_To || []}
-                rules={{required: true}}
+                rules={{ required: true }}
                 render={({ field }) => {
                   return (
                     <Autocomplete
@@ -135,10 +171,10 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                       getOptionLabel={(option) => option}
                       onChange={(_, data) => field.onChange(data)}
                       renderInput={(params) => (
-                        <TextField {...params} error={errors["Assign_To"]}  />
+                        <TextField {...params} error={errors["Assign_To"]} />
                       )}
                     />
-                  )
+                  );
                 }}
               />
             </Box>
@@ -154,12 +190,17 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
             >
               {/* Project Name */}
               <Box sx={{ width: "47%" }}>
-                <FormLabel id='projectName' sx={{ mb: "10px", color: "black" }}>Project Name</FormLabel>
+                <FormLabel id="projectName" sx={{ mb: "10px", color: "black" }}>
+                  Project Name
+                </FormLabel>
                 <Controller
                   name="Project_Name"
                   control={control}
-                  defaultValue={{ Project_Name: singleData?.Project_Name, Project_ID: singleData?.Project_ID }}
-                  rules={{required: true}}
+                  defaultValue={{
+                    Project_Name: singleData?.Project_Name,
+                    Project_ID: singleData?.Project_ID,
+                  }}
+                  rules={{ required: true }}
                   render={({ field }) => {
                     return (
                       <Autocomplete
@@ -167,38 +208,45 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                         disabled
                         disablePortal
                         options={getProjects(projects)}
-                        getOptionLabel={(option) => option.Project_Name ? option.Project_Name : ""}
+                        getOptionLabel={(option) =>
+                          option.Project_Name ? option.Project_Name : ""
+                        }
                         onChange={(_, data) => {
-                          field.onChange({ Project_Name: data?.Project_Name, Project_ID: data?.Project_ID })
+                          field.onChange({
+                            Project_Name: data?.Project_Name,
+                            Project_ID: data?.Project_ID,
+                          });
                           // console.log(data)
                         }}
                         sx={{
                           "& .MuiInputBase-root": {
                             padding: "0 65px 0 0",
-                            marginBottom: "1rem"
-                          }
+                            marginBottom: "1rem",
+                          },
                         }}
                         renderInput={(params) => (
                           <TextField
                             inputProps={{
                               style: {
-                                padding: '5px 14px',
-                                margin: '2px 8px'
-                              }
+                                padding: "5px 14px",
+                                margin: "2px 8px",
+                              },
                             }}
                             {...params}
                             error={errors["Project_Name"]}
                           />
                         )}
                       />
-                    )
+                    );
                   }}
                 />
               </Box>
 
               {/* account manager */}
               <Box sx={{ width: "47%" }}>
-                <FormLabel id='projectName' sx={{ mb: "10px", color: "black" }}>Account Manager</FormLabel>
+                <FormLabel id="projectName" sx={{ mb: "10px", color: "black" }}>
+                  Account Manager
+                </FormLabel>
                 <Controller
                   name="Account_Manager"
                   control={control}
@@ -211,27 +259,27 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                         options={accountManagers}
                         getOptionLabel={(option) => option}
                         onChange={(_, data) => {
-                          field.onChange(data)
+                          field.onChange(data);
                         }}
                         sx={{
                           "& .MuiInputBase-root": {
                             padding: "0 65px 0 0",
-                            marginBottom: "1rem"
-                          }
+                            marginBottom: "1rem",
+                          },
                         }}
                         renderInput={(params) => (
                           <TextField
                             inputProps={{
                               style: {
-                                padding: '5px 14px',
-                                margin: '2px 8px'
-                              }
+                                padding: "5px 14px",
+                                margin: "2px 8px",
+                              },
                             }}
                             {...params}
                           />
                         )}
                       />
-                    )
+                    );
                   }}
                 />
               </Box>
@@ -241,16 +289,18 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
               control={control}
               name="Name"
               defaultValue={singleData.Name}
-              rules={{required: true}}
+              rules={{ required: true }}
               render={({ field }) => (
                 <>
-                  <FormLabel id='name' sx={{ mb: "10px",color: "black" }}>Task Name</FormLabel>
+                  <FormLabel id="name" sx={{ mb: "10px", color: "black" }}>
+                    Task Name
+                  </FormLabel>
                   <TextField
                     inputProps={{
                       style: {
-                        padding: '5px 14px',
-                        margin: '2px 8px'
-                      }
+                        padding: "5px 14px",
+                        margin: "2px 8px",
+                      },
                     }}
                     id="name"
                     variant="outlined"
@@ -270,38 +320,44 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
-                mb: "1rem"
+                mb: "1rem",
               }}
             >
               {/* Due Date */}
-              <Box sx={{
-                width: "30%"
-              }}>
-                <FormLabel id="date" sx={{ mb: "10px", color: "black" }}>Due Date</FormLabel>
-                <Controller 
+              <Box
+                sx={{
+                  width: "30%",
+                }}
+              >
+                <FormLabel id="date" sx={{ mb: "10px", color: "black" }}>
+                  Due Date
+                </FormLabel>
+                <Controller
                   defaultValue={singleData.Due_Date}
                   name="Due_Date"
                   control={control}
-                  rules={{required: true}}
+                  rules={{ required: true }}
                   render={({ field }) => (
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker 
-                        onChange={(newValue) => field.onChange(dayjs(newValue).format('YYYY/MM/DD'))}
+                      <DatePicker
+                        onChange={(newValue) =>
+                          field.onChange(dayjs(newValue).format("YYYY/MM/DD"))
+                        }
                         {...field}
-                        renderInput={(params) => 
-                          <TextField 
-                            id="date" 
-                            variant="outlined" 
-                            type="date" 
+                        renderInput={(params) => (
+                          <TextField
+                            id="date"
+                            variant="outlined"
+                            type="date"
                             sx={{
                               "& .MuiInputBase-root": {
                                 height: "2.3rem !important",
                               },
-                            }} 
-                            {...params} 
+                            }}
+                            {...params}
                             error={errors["Due_Date"]}
                           />
-                        }
+                        )}
                       />
                     </LocalizationProvider>
                   )}
@@ -310,12 +366,14 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
 
               {/* Task Status */}
               <Box sx={{ width: "30%", mt: "14px" }}>
-                <FormLabel id='taskStatus' sx={{ mb: "10px", color: "black" }}>Task Status</FormLabel>
+                <FormLabel id="taskStatus" sx={{ mb: "10px", color: "black" }}>
+                  Task Status
+                </FormLabel>
                 <Controller
                   name="Task_Status"
                   control={control}
                   defaultValue={singleData?.Task_Status}
-                  rules={{required: true}}
+                  rules={{ required: true }}
                   render={({ field }) => {
                     return (
                       <Autocomplete
@@ -324,40 +382,42 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                         options={taskStatus}
                         getOptionLabel={(option) => option}
                         onChange={(_, data) => {
-                          field.onChange(data)
+                          field.onChange(data);
                         }}
                         sx={{
                           "& .MuiInputBase-root": {
                             padding: "0 65px 0 0",
-                            marginBottom: "1rem"
-                          }
+                            marginBottom: "1rem",
+                          },
                         }}
                         renderInput={(params) => (
                           <TextField
                             inputProps={{
                               style: {
-                                padding: '5px 14px',
-                                margin: '2px 8px'
-                              }
+                                padding: "5px 14px",
+                                margin: "2px 8px",
+                              },
                             }}
                             {...params}
                             error={errors["Task_Status"]}
                           />
                         )}
                       />
-                    )
+                    );
                   }}
                 />
               </Box>
 
               {/* billable/not billable */}
               <Box sx={{ width: "30%", mt: "14px" }}>
-                <FormLabel id='billable' sx={{ mb: "10px", color: "black" }}>Is the Task Billable?</FormLabel>
+                <FormLabel id="billable" sx={{ mb: "10px", color: "black" }}>
+                  Is the Task Billable?
+                </FormLabel>
                 <Controller
                   name="Billable"
                   control={control}
                   defaultValue={singleData?.Billable}
-                  rules={{required: true}}
+                  rules={{ required: true }}
                   render={({ field }) => {
                     return (
                       <Autocomplete
@@ -366,28 +426,28 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                         options={billable}
                         getOptionLabel={(option) => option}
                         onChange={(_, data) => {
-                          field.onChange(data)
+                          field.onChange(data);
                         }}
                         sx={{
                           "& .MuiInputBase-root": {
                             padding: "0 65px 0 0",
-                            marginBottom: "1rem"
-                          }
+                            marginBottom: "1rem",
+                          },
                         }}
                         renderInput={(params) => (
                           <TextField
                             inputProps={{
                               style: {
-                                padding: '5px 14px',
-                                margin: '2px 8px'
-                              }
+                                padding: "5px 14px",
+                                margin: "2px 8px",
+                              },
                             }}
                             {...params}
                             error={errors["Billable"]}
                           />
                         )}
                       />
-                    )
+                    );
                   }}
                 />
               </Box>
@@ -427,29 +487,33 @@ export default function AlertDialogSlide({ openTask, handleEditClose, handleEdit
                 flexDirection: "row",
                 justifyContent: "flex-end",
                 alignItems: "center",
-                gap: "1rem"
+                gap: "1rem",
               }}
             >
-              <Button onClick={() => {
-                reset({
-                  "Assign_To": singleData.Assign_To,
-                  "Project_Name": singleData.Project_Name,
-                  "Account_Manager": singleData.Account_Manager,
-                  "Name": singleData.Name,
-                  "Task_Status": singleData.Task_Status,
-                  "Billable": singleData.Billable,
-                })
-                setAttachments([])
-                handleEditClose()}} variant="outlined">Cancel</Button>
+              <Button
+                onClick={() => {
+                  reset({
+                    Assign_To: singleData.Assign_To,
+                    Project_Name: singleData.Project_Name,
+                    Account_Manager: singleData.Account_Manager,
+                    Name: singleData.Name,
+                    Task_Status: singleData.Task_Status,
+                    Billable: singleData.Billable,
+                  });
+                  setAttachments([]);
+                  handleEditClose();
+                }}
+                variant="outlined"
+              >
+                Cancel
+              </Button>
               <LoadingButton
-                variant='contained' 
-                type='button'
+                variant="contained"
+                type="button"
                 loadingPosition="start"
                 startIcon={<SaveIcon />}
-                loading={updateLoader} 
-                onClick={
-                  handleSubmit(onsubmit)
-                }
+                loading={updateLoader}
+                onClick={handleSubmit(onsubmit)}
               >
                 Update
               </LoadingButton>

@@ -1,44 +1,76 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import Slide from '@mui/material/Slide';
-import { Autocomplete, Box, FormLabel, TextField } from '@mui/material';
-import { Controller, useForm } from 'react-hook-form';
+import * as React from "react";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
+import { Autocomplete, Box, FormLabel, TextField } from "@mui/material";
+import { Controller, useForm } from "react-hook-form";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
-import { useState, useEffect } from 'react';
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import { useState, useEffect } from "react";
 
-import LoadingButton from '@mui/lab/LoadingButton';
-import AddIcon from '@mui/icons-material/Add';
+import LoadingButton from "@mui/lab/LoadingButton";
+import AddIcon from "@mui/icons-material/Add";
 
-import FileInput from './FileInput';
+import FileInput from "./FileInput";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-
-
-
-export default function AlertDialogSlide({ open, handleClose, name, handleAddTaskSubmit, projects, loading }) {
+export default function AddTask({
+  open,
+  handleClose,
+  name,
+  handleAddTaskSubmit,
+  projects,
+  loading,
+}) {
   // console.log({projects})
   const [addCardLoading, setAddCardLoading] = useState(loading);
-  const { control, handleSubmit, reset, formState: { errors } } = useForm();
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
-  const [selected, setSelected] = useState([name])
+  const [selected, setSelected] = useState([name]);
 
-  const [attachments, setAttachments] = useState([])
+  const [attachments, setAttachments] = useState([]);
 
-  const accountManagers = ["Maddie Hassan", "Hoang Tran Pham", "Michael Yana", "Baz Destiny"]
+  const accountManagers = [
+    "Maddie Hassan",
+    "Hoang Tran Pham",
+    "Michael Yana",
+    "Baz Destiny",
+  ];
 
-  const taskStatus = ["Open - To Do", "Analysis", "In Progress - Waiting for Developer", "Waiting on Client", "QA", "UAT", "Closed", "Backlog"]
+  const taskStatus = [
+    "Open - To Do",
+    "Analysis",
+    "In Progress - Waiting for Developer",
+    "Waiting on Client",
+    "QA",
+    "UAT",
+    "Closed",
+    "Backlog",
+  ];
 
-  const billable = ["Yes", "No"]
+  const billable = ["Yes", "No"];
 
-  const assignedToOptions = ["Baz Destiny", "Ih shawn", "Emranul Hassan", "Hoang Tran Pham", "Maddie Hassan", "Michael Yana", "Boosted CRM", "Rowel Sabas"]
+  const assignedToOptions = [
+    "Baz Destiny",
+    "Ih shawn",
+    "Emranul Hassan",
+    "Hoang Tran Pham",
+    "Maddie Hassan",
+    "Michael Yana",
+    "Boosted CRM",
+    "Rowel Sabas",
+  ];
 
   const customDate = (date) => {
     const dateObj = new Date(date);
@@ -46,18 +78,18 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
     let month = dateObj.getMonth();
     let day = dateObj.getDate();
     return `${year}-${month + 1}-${day < 10 ? `0${day}` : day}`;
-  }
+  };
 
   useEffect(() => {
     reset({
-      "Assign_To": [name],
-      "Project_Name": null,
-      "Account_Manager": "",
-      "Name": "",
-      "Task_Status": "",
-      "Billable": "",
-    })
-    setAttachments([])
+      Assign_To: [name],
+      Project_Name: null,
+      Account_Manager: "",
+      Name: "",
+      Task_Status: "",
+      Billable: "",
+    });
+    setAttachments([]);
   }, [open]);
 
   // console.log(attachments)
@@ -66,30 +98,30 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
     // console.log("hi")
     setAddCardLoading(true);
     await handleAddTaskSubmit({
-      "Name": `${data.Name}`,
-      "Assign_To": selected,
-      "Project_Name": data.Project_Name,
-      "Account_Manager": `${data.Account_Manager}`,
-      "Due_Date": `${customDate(data.Due_Date)}`,
-      "Task_Status": `${data.Task_Status}`,
-      "Billable": `${data.Billable}`,
-      "Attachments": attachments
-    })
+      Name: `${data.Name}`,
+      Assign_To: selected,
+      Project_Name: data.Project_Name,
+      Account_Manager: `${data.Account_Manager}`,
+      Due_Date: `${customDate(data.Due_Date)}`,
+      Task_Status: `${data.Task_Status}`,
+      Billable: `${data.Billable}`,
+      Attachments: attachments,
+    });
 
     reset({
-      "Assign_To": [name],
-      "Project_Name": null,
-      "Account_Manager": "",
-      "Name": "",
-      "Task_Status": "",
-      "Billable": "",
-    })
+      Assign_To: [name],
+      Project_Name: null,
+      Account_Manager: "",
+      Name: "",
+      Task_Status: "",
+      Billable: "",
+    });
 
-    setAttachments([])
-  
+    setAttachments([]);
+
     setAddCardLoading(false);
-    handleClose()
-  }
+    handleClose();
+  };
 
   return (
     <div>
@@ -103,30 +135,30 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
         maxWidth="md"
         sx={{
           "& .MuiPaper-root": {
-            padding: "1rem 20px"
-          }
+            padding: "1rem 20px",
+          },
         }}
       >
-        <DialogTitle sx={{ mb: "0.5rem", mt: "1rem" }}>{`Create New Task for ${name}?`}</DialogTitle>
+        <DialogTitle
+          sx={{ mb: "0.5rem", mt: "1rem" }}
+        >{`Create New Task for ${name}?`}</DialogTitle>
         <DialogContent>
-          <Box 
-            component="form" 
-            onSubmit={handleSubmit(onsubmit)} 
-          >
-            <Box 
-              sx={{ 
-                width: "100%" ,
+          <Box component="form" onSubmit={handleSubmit(onsubmit)}>
+            <Box
+              sx={{
+                width: "100%",
                 display: "flex",
                 flexDirection: "column",
                 mb: "1rem",
-
               }}
             >
-              <FormLabel id='assignTo' sx={{ mb: "10px", color: "black" }}>Assign To?</FormLabel>
+              <FormLabel id="assignTo" sx={{ mb: "10px", color: "black" }}>
+                Assign To?
+              </FormLabel>
               <Controller
                 name="Assign_To"
                 control={control}
-                rules={{required: true}}
+                rules={{ required: true }}
                 defaultValue={[name] || []}
                 render={({ field }) => {
                   return (
@@ -143,7 +175,7 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                         <TextField {...params} error={errors["Assign_To"]} />
                       )}
                     />
-                  )
+                  );
                 }}
               />
             </Box>
@@ -158,48 +190,57 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
               }}
             >
               <Box sx={{ width: "47%" }}>
-                <FormLabel id='projectName' sx={{ mb: "10px", color: "black" }}>Project Name</FormLabel>
+                <FormLabel id="projectName" sx={{ mb: "10px", color: "black" }}>
+                  Project Name
+                </FormLabel>
                 <Controller
                   name="Project_Name"
                   control={control}
-                  rules={{required: true}}
+                  rules={{ required: true }}
                   render={({ field }) => {
                     return (
                       <Autocomplete
                         {...field}
                         disablePortal
                         options={projects}
-                        getOptionLabel={(option) => option.Project_Name ? option.Project_Name : ""}
+                        getOptionLabel={(option) =>
+                          option.Project_Name ? option.Project_Name : ""
+                        }
                         onChange={(_, data) => {
-                          field.onChange({ Project_Name: data?.Project_Name, Project_ID: data?.Project_ID })
+                          field.onChange({
+                            Project_Name: data?.Project_Name,
+                            Project_ID: data?.Project_ID,
+                          });
                           // console.log(data)
                         }}
                         sx={{
                           "& .MuiInputBase-root": {
                             padding: "0 65px 0 0",
-                            marginBottom: "1rem"
-                          }
+                            marginBottom: "1rem",
+                          },
                         }}
                         renderInput={(params) => (
                           <TextField
                             inputProps={{
                               style: {
-                                padding: '5px 14px',
-                                margin: '2px 8px'
-                              }
+                                padding: "5px 14px",
+                                margin: "2px 8px",
+                              },
                             }}
                             {...params}
                             error={errors["Project_Name"]}
                           />
                         )}
                       />
-                    )
+                    );
                   }}
                 />
               </Box>
 
               <Box sx={{ width: "47%" }}>
-                <FormLabel id='projectName' sx={{ mb: "10px", color: "black" }}>Account Manager</FormLabel>
+                <FormLabel id="projectName" sx={{ mb: "10px", color: "black" }}>
+                  Account Manager
+                </FormLabel>
                 <Controller
                   name="Account_Manager"
                   control={control}
@@ -211,27 +252,27 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                         options={accountManagers}
                         getOptionLabel={(option) => option}
                         onChange={(_, data) => {
-                          field.onChange(data)
+                          field.onChange(data);
                         }}
                         sx={{
                           "& .MuiInputBase-root": {
                             padding: "0 65px 0 0",
-                            marginBottom: "1rem"
-                          }
+                            marginBottom: "1rem",
+                          },
                         }}
                         renderInput={(params) => (
                           <TextField
                             inputProps={{
                               style: {
-                                padding: '5px 14px',
-                                margin: '2px 8px'
-                              }
+                                padding: "5px 14px",
+                                margin: "2px 8px",
+                              },
                             }}
                             {...params}
                           />
                         )}
                       />
-                    )
+                    );
                   }}
                 />
               </Box>
@@ -240,16 +281,18 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
             <Controller
               control={control}
               name="Name"
-              rules={{required: true}}
+              rules={{ required: true }}
               render={({ field }) => (
                 <>
-                  <FormLabel id='name' sx={{ mb: "10px",color: "black" }}>Task Name</FormLabel>
+                  <FormLabel id="name" sx={{ mb: "10px", color: "black" }}>
+                    Task Name
+                  </FormLabel>
                   <TextField
                     inputProps={{
                       style: {
-                        padding: '5px 14px',
-                        margin: '2px 8px'
-                      }
+                        padding: "5px 14px",
+                        margin: "2px 8px",
+                      },
                     }}
                     id="name"
                     variant="outlined"
@@ -269,29 +312,43 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-between",
-                mb: "1rem"
+                mb: "1rem",
               }}
             >
-              <Box sx={{
-                width: "30%"
-              }}>
-                <FormLabel id="date" sx={{ mb: "10px", color: "black" }}>Due Date</FormLabel>
-                <Controller 
+              <Box
+                sx={{
+                  width: "30%",
+                }}
+              >
+                <FormLabel id="date" sx={{ mb: "10px", color: "black" }}>
+                  Due Date
+                </FormLabel>
+                <Controller
                   name="Due_Date"
                   control={control}
                   defaultValue={customDate(new Date())}
-                  rules={{required: true}}
+                  rules={{ required: true }}
                   render={({ field }) => (
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker 
-                        onChange={(newValue) => field.onChange(dayjs(newValue).format('YYYY/MM/DD'))}
+                      <DatePicker
+                        onChange={(newValue) =>
+                          field.onChange(dayjs(newValue).format("YYYY/MM/DD"))
+                        }
                         {...field}
-                        renderInput={(params) => <TextField id="date" variant="outlined" type="date" sx={{
+                        renderInput={(params) => (
+                          <TextField
+                            id="date"
+                            variant="outlined"
+                            type="date"
+                            sx={{
                               "& .MuiInputBase-root": {
                                 height: "2.3rem !important",
                               },
-                              
-                            }} {...params} error={errors["Due_Date"]} />}
+                            }}
+                            {...params}
+                            error={errors["Due_Date"]}
+                          />
+                        )}
                       />
                     </LocalizationProvider>
                   )}
@@ -299,11 +356,13 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
               </Box>
 
               <Box sx={{ width: "30%", mt: "14px" }}>
-                <FormLabel id='taskStatus' sx={{ mb: "10px", color: "black" }}>Task Status</FormLabel>
+                <FormLabel id="taskStatus" sx={{ mb: "10px", color: "black" }}>
+                  Task Status
+                </FormLabel>
                 <Controller
                   name="Task_Status"
                   control={control}
-                  rules={{required: true}}
+                  rules={{ required: true }}
                   render={({ field }) => {
                     return (
                       <Autocomplete
@@ -312,38 +371,40 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                         options={taskStatus}
                         getOptionLabel={(option) => option}
                         onChange={(_, data) => {
-                          field.onChange(data)
+                          field.onChange(data);
                         }}
                         sx={{
                           "& .MuiInputBase-root": {
                             padding: "0 65px 0 0",
-                            marginBottom: "1rem"
-                          }
+                            marginBottom: "1rem",
+                          },
                         }}
                         renderInput={(params) => (
                           <TextField
                             inputProps={{
                               style: {
-                                padding: '5px 14px',
-                                margin: '2px 8px'
-                              }
+                                padding: "5px 14px",
+                                margin: "2px 8px",
+                              },
                             }}
                             {...params}
                             error={errors["Task_Status"]}
                           />
                         )}
                       />
-                    )
+                    );
                   }}
                 />
               </Box>
 
               <Box sx={{ width: "30%", mt: "14px" }}>
-                <FormLabel id='billable' sx={{ mb: "10px", color: "black" }}>Is the Task Billable?</FormLabel>
+                <FormLabel id="billable" sx={{ mb: "10px", color: "black" }}>
+                  Is the Task Billable?
+                </FormLabel>
                 <Controller
                   name="Billable"
                   control={control}
-                  rules={{required: true}}
+                  rules={{ required: true }}
                   render={({ field }) => {
                     return (
                       <Autocomplete
@@ -352,28 +413,28 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                         options={billable}
                         getOptionLabel={(option) => option}
                         onChange={(_, data) => {
-                          field.onChange(data)
+                          field.onChange(data);
                         }}
                         sx={{
                           "& .MuiInputBase-root": {
                             padding: "0 65px 0 0",
-                            marginBottom: "1rem"
-                          }
+                            marginBottom: "1rem",
+                          },
                         }}
                         renderInput={(params) => (
                           <TextField
                             inputProps={{
                               style: {
-                                padding: '5px 14px',
-                                margin: '2px 8px'
-                              }
+                                padding: "5px 14px",
+                                margin: "2px 8px",
+                              },
                             }}
                             {...params}
                             error={errors["Billable"]}
                           />
                         )}
                       />
-                    )
+                    );
                   }}
                 />
               </Box>
@@ -395,25 +456,30 @@ export default function AlertDialogSlide({ open, handleClose, name, handleAddTas
                 flexDirection: "row",
                 justifyContent: "flex-end",
                 alignItems: "center",
-                gap: "1rem"
+                gap: "1rem",
               }}
             >
-              <Button onClick={() => {
-                reset({
-                  "Assign_To": [name],
-                  "Project_Name": null,
-                  "Account_Manager": "",
-                  "Name": "",
-                  "Task_Status": "",
-                  "Billable": "",
-                })
-                setAttachments([])
-                handleClose()
-              }} variant="outlined">Cancel</Button>
+              <Button
+                onClick={() => {
+                  reset({
+                    Assign_To: [name],
+                    Project_Name: null,
+                    Account_Manager: "",
+                    Name: "",
+                    Task_Status: "",
+                    Billable: "",
+                  });
+                  setAttachments([]);
+                  handleClose();
+                }}
+                variant="outlined"
+              >
+                Cancel
+              </Button>
 
-              <LoadingButton 
-                variant='contained' 
-                type='button' 
+              <LoadingButton
+                variant="contained"
+                type="button"
                 loadingPosition="start"
                 startIcon={<AddIcon />}
                 loading={addCardLoading}

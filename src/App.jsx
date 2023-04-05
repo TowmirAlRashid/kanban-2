@@ -68,7 +68,7 @@ function App() {
       let req_data = {
         parameters: {
           select_query:
-            "select id, Account_Manager, Assign_To, Billable, Billable_log_in_Minutes, Due_Date, Project_ID, Project_Name, Task_ID, Task_List_ID, Task_Status, Name, Is_Subtask, Priority from ZP_Tasks where ((Task_Status != 'Closed' and Task_Status != 'Backlog') and Name not in ('Creds', 'Cred', 'Creds') )",
+            "select id, Account_Manager, Assign_To, Billable, Billable_log_in_Minutes, Due_Date, Project_ID, Project_Name, Task_ID, Task_List_ID, Task_Status, Name, Is_Subtask, Priority from ZP_Tasks where ((Task_Status != 'Closed' and Task_Status != 'Backlog') and Name not in ('Creds', 'Cred', 'Creds', 'OUT', 'Out', 'out', 'IN', 'In', 'in', 'CREDS', 'creds', 'CRED', 'cred') )",
         },
         method: "POST",
         url: "https://www.zohoapis.com/crm/v3/coql",
@@ -96,8 +96,9 @@ function App() {
         setProjects(
           data?.details?.statusMessage?.projects?.map((singleData) => {
             return {
-              Project_Name: singleData.name,
-              Project_ID: singleData.id_string,
+              Project_Name: singleData?.name,
+              Project_ID: singleData?.id_string,
+              Project_Status: singleData?.status,
             };
           })
         );
@@ -105,6 +106,8 @@ function App() {
     }
     // setKanbanLoading(false)
   }, [initialized]);
+
+  console.log(cardsData);
 
   const handleAddTaskSubmit = async (data) => {
     const { Project_Name, ...rest } = data;
@@ -444,7 +447,11 @@ function App() {
 
   const getProjectNames = (arrayOfProjects) => {
     const arrayOfProjectNames = arrayOfProjects
-      .filter((singleData) => singleData.Project_ID !== null)
+      .filter(
+        (singleData) =>
+          singleData.Project_ID !== null &&
+          singleData?.Project_Status === "active"
+      )
       .map((singleData) => singleData.Project_Name);
     const uniqueArrayOfProjectNames = Array.from(new Set(arrayOfProjectNames));
     // console.log(uniqueArrayOfProjectNames);
