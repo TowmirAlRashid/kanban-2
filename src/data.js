@@ -95,6 +95,14 @@ const data = [
     otherBorders: "#c5cce7",
     status: "Abhishek Dudeja",
   },
+  {
+    id: 13,
+    columnTitle: "Kunal Sikka",
+    backgroundColor: "#daf5f7",
+    borderTopColor: "#99d1d3",
+    otherBorders: "#cfe9ea",
+    status: "Kunal Sikka",
+  },
 ];
 
 export default data;
