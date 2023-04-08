@@ -57,7 +57,7 @@ const data = [
   },
   {
     id: 8,
-    columnTitle: "Tim R.",
+    columnTitle: "Tim R",
     backgroundColor: "#f7dae4",
     borderTopColor: "#dca2b6",
     otherBorders: "#eecbd7",
