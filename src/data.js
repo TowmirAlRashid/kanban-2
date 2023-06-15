@@ -97,11 +97,19 @@ const data = [
   },
   {
     id: 13,
-    columnTitle: "Kunal Sikka",
+    columnTitle: "Ankush Gupta",
     backgroundColor: "#daf5f7",
     borderTopColor: "#99d1d3",
     otherBorders: "#cfe9ea",
-    status: "Kunal Sikka",
+    status: "Ankush Gupta",
+  },
+  {
+    id: 14,
+    columnTitle: "Goyal Piyush",
+    backgroundColor: "#f7dae4",
+    borderTopColor: "#dca2b6",
+    otherBorders: "#eecbd7",
+    status: "Goyal Piyush",
   },
 ];
 
