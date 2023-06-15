@@ -70,6 +70,8 @@ export default function AddTask({
     "Michael Yana",
     "Boosted CRM",
     "Rowel Sabas",
+    "Ankush Gupta",
+    "Goyal Piyush",
   ];
 
   const customDate = (date) => {

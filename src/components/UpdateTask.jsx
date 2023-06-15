@@ -85,6 +85,8 @@ export default function UpdateTask({
     "Michael Yana",
     "Boosted CRM",
     "Rowel Sabas",
+    "Ankush Gupta",
+    "Goyal Piyush",
   ];
 
   const customDate = (date) => {

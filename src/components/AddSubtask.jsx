@@ -71,6 +71,8 @@ export default function AddSubtask({
     "Michael Yana",
     "Boosted CRM",
     "Rowel Sabas",
+    "Ankush Gupta",
+    "Goyal Piyush",
   ];
 
   const customDate = (date) => {
